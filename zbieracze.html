@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Zbieracze</title>
+    <script>
+        let zulX = 0;
+        let zulY = 0;
+        let PrevNode;
+        let fields;
+        let zulInv = [];
+        let zulEnergy = 100;
+        let zulEnergyRefill = 100;
+        let zulEnergyEndurance = 1;
+
+        let itemlist = [
+            {
+                //1
+                name: "Pusta Puszka",
+                value: 5,
+                img:"puszka.jpg",
+                
+            },
+            {
+                //2
+                name: "Puszka Szlacheckie Mocne (resztka)",
+                value: 10,
+                img: "szlacheckie.png"
+            },
+            {
+                //3
+                name: "Miedziany Kabel",
+                value: 40,
+                img: "CUkabel.jpg"
+            }
+        ];
+        function InvReset()
+        {
+            if(event.target.className == "name")
+                                {
+                                    event.target.parentNode.style.display = "none";
+                                    zulEnergy -= 3;
+                                    document.getElementById("zulEnergy").innerHTML = zulEnergy;
+                                }
+                                if(event.target.tagName == "IMG")
+                                {
+                                    event.target.parentNode.style.display = "none";
+                                    zulEnergy -= 3;
+                                    document.getElementById("zulEnergy").innerHTML = zulEnergy;
+                                }
+                                if(event.target.className == "lootitem")
+                                {
+                                    event.target.style.display = "none";
+                                    zulEnergy -= 3;
+                                    document.getElementById("zulEnergy").innerHTML = zulEnergy;
+                                }
+
+                                if(document.getElementById("zulInv").style.display != "none")
+                                {
+                                    zulInventoryToggle();
+                                    zulInventoryToggle();
+                                }
+        }
+        function AddItem(item) {
+            if(zulEnergy >= 3)
+            {
+                if(zulInv.includes(itemlist[item - 1]))
+                {
+                    for(i = 0; i < zulInv.length; i++)
+                    {
+                        if(zulInv[i] == itemlist[item - 1])
+                        {
+                            if(zulInv[i].amount == undefined)
+                            {
+                                zulInv[i].amount = 1;
+                                InvReset();
+                            }
+                            else
+                            {
+                                zulInv[i].amount += 1;
+                                InvReset();
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    let pushIndex = zulInv.push(itemlist[item - 1]) - 1;
+                    if(zulInv[pushIndex].amount == undefined)
+                    {
+                        zulInv[pushIndex].amount = 1;
+                        InvReset();
+                    }
+                    else
+                    {
+                        zulInv[pushIndex].amount += 1;
+                        InvReset();
+                    }
+                }
+            }
+        }
+        function AddItemNEC(item) { // NEC - No Energy Check
+            
+            if(zulInv.includes(itemlist[item - 1]))
+            {
+                for(i = 0; i < zulInv.length; i++)
+                {
+                    if(zulInv[i] == itemlist[item - 1])
+                    {
+                        if(zulInv[i].amount == undefined)
+                        {
+                            zulInv[i].amount = 1;
+                            InvReset();
+                        }
+                        else
+                        {
+                            zulInv[i].amount += 1;
+                            InvReset();
+                        }
+                    }
+                }
+            }
+            else
+            {
+                let pushIndex = zulInv.push(itemlist[item - 1]) - 1;
+                if(zulInv[pushIndex].amount == undefined)
+                {
+                    zulInv[pushIndex].amount = 1;
+                    InvReset();
+                }
+                else
+                {
+                    zulInv[pushIndex].amount += 1;
+                    InvReset();
+                }
+            }
+    }   
+        function GenerateLoot(min,max,lootlist,coords)
+        {
+            let amount = Math.floor(Math.random() * (max - min + 1) + min);
+            let itemid;
+            let loothtml = '<div class="loot"> ';
+            for(i = 0; i < amount; i++)
+            {
+
+                itemid = Math.floor(Math.random() * lootlist.length);
+                loothtml += `<div class="lootitem" onclick="AddItem(${lootlist[itemid]})"><img src="img/${itemlist[lootlist[itemid] - 1].img}" /><span class="name">${itemlist[lootlist[itemid] - 1].name}</span></div>`;
+                if(amount - i == 1)
+                {
+                    loothtml += `<div class="close" onclick="closeloot('${coords}')">X</div></div>`;
+                    return loothtml;
+                }
+                
+            }
+        }
+        function MapGenerate(name)
+        {
+            switch(name)
+            {
+                case "first":
+                document.getElementById("map").style.opacity = 0;
+                
+                setTimeout(() => {
+                    zulEnergy = zulEnergyRefill;
+                    zulX = 0;
+                    zulY = 0;
+                    
+                    fields = [
+                    field1 = Math.floor((Math.random() * 3) + 1),
+                    field2 = Math.floor((Math.random() * 3) + 1),
+                    field3 = Math.floor((Math.random() * 3) + 1),
+                    field4 = Math.floor((Math.random() * 3) + 1),
+                    field5 = Math.floor((Math.random() * 3) + 1),
+                    field6 = Math.floor((Math.random() * 3) + 1),
+                    field7 = Math.floor((Math.random() * 3) + 1),
+                    field8 = Math.floor((Math.random() * 3) + 1),
+                    field9 = ["puste"],
+                    field10 = ["puste"],
+                    field11 = ["puste"],
+                    field12 = ["puste"],
+                    field13 = ["smietnik",GenerateLoot(7,7,[1,2,3],"5,1")]  // Specjalny śmietnik
+                    ]
+                    for(i = 0;i < fields.length; i++) {
+                        if(fields[i] == 1) { fields[i] = ["puste"]}
+                        if(fields[i] == 2) { fields[i] = ["puste"]}
+                        if(fields[i] == 3) { fields[i] = ["smietnik", "puszki"]}
+                    }
+                    
+                    document.getElementById("map").innerHTML = `<div class="laweczka" style=" left:5vw;                 top:15vh">Ławeczka</div>      <div class="${fields[0][0]}" style="left:20vw; top:30vh;" onclick="Jump(1,1)" id="1,1">${GenerateLoot(3,5,[1,1,2,2,3],"1,1")}</div><div class="${fields[1][0]}" style="left:40vw; top:30vh;" onclick="Jump(2,1)" id="2,1">${GenerateLoot(3,5,[1,1,2,2,3],"2,1")}</div><div class="${fields[2][0]}" style="left:60vw; top:30vh;" onclick="Jump(3,1)" id="3,1">${GenerateLoot(3,5,[1,1,2,2,3],"3,1")}</div><div class="${fields[3][0]}" style="left:20vw; top:50vh;" onclick="Jump(1,2)" id="1,2">${GenerateLoot(3,5,[1,1,2,2,3],"1,2")}</div><div class="${fields[4][0]}" style="left:40vw; top:50vh;" onclick="Jump(2,2)" id="2,2">${GenerateLoot(3,5,[1,1,2,2,3],"2,2")}</div><div class="${fields[5][0]}" style="left:60vw; top:50vh;" onclick="Jump(3,2)" id="3,2">${GenerateLoot(3,5,[1,1,2,2,3],"3,2")}</div><div class="${fields[6][0]}" style="left:20vw; top:70vh;" onclick="Jump(1,3)" id="1,3">${GenerateLoot(3,5,[1,1,2,2,3],"1,3")}</div><div class="${fields[7][0]}" style="left:40vw; top:70vh;" onclick="Jump(2,3)" id="2,3">${GenerateLoot(3,5,[1,1,2,2,3],"2,3")}</div><div class="${fields[8][0]}" style="left:60vw; top:70vh;" onclick="Jump(3,3)" id="3,3">${GenerateLoot(3,5,[1,1,2,2,3],"3,3")}</div><div class="${fields[9][0]}" style="left:80vw; top:70vh;" onclick="Jump(4,3)" id="4,3"></div>              <div class="${fields[10][0]}" style="left:95vw; top:70vh;" onclick="Jump(5,3)" id="5,3"></div>    <div class="${fields[11][0]}" style="left:95vw; top:50vh;" onclick="Jump(5,2)" id="5,2"></div>  <div class="${fields[12][0]}" style="left:95vw; top:30vh;" onclick="Jump(5,1)" id="5,1">${fields[12][1]}</div>`;
+
+                    document.getElementById("map").style.opacity = 1;
+                },1000);
+
+                break;
+            }
+        }
+        function Jump(x,y)
+        {
+            if(x - zulX >= -1 && x - zulX <= 1)
+            {
+                if(y - zulY >= -1 && y - zulY <= 1)
+                {
+                    if(zulEnergy >= 5)
+                    {
+                        zulEnergy -= 5;
+                        document.getElementById("zulEnergy").innerHTML = zulEnergy;
+                        if(document.getElementById(`${zulX},${zulY}`))
+                        {
+                            document.getElementById(`${zulX},${zulY}`).style.backgroundColor=prevNode;
+                            document.getElementById(`${zulX},${zulY}`).style.outline = "solid 1px yellow";
+                            document.getElementById(`${zulX},${zulY}`).style.width = "3vw";
+                            document.getElementById(`${zulX},${zulY}`).style.height = "3vw";
+                            if(document.getElementById(`${zulX},${zulY}`).className == "smietnik" && document.getElementById(`${zulX},${zulY}`).childNodes.length != 0)
+                                {
+                                    if(event.target.className == "close")
+                                    {
+                                        document.getElementById(`${zulX},${zulY}`).getElementsByClassName("loot")[0].style.display = "none";
+                                    }
+                                    if(event.target.className == "smietnik" || event.target.className == "puste")
+                                    {
+                                        document.getElementById(`${zulX},${zulY}`).getElementsByClassName("loot")[0].style.display = "none";
+                                    }
+                                }
+                        }
+                        zulX = x;
+                        zulY = y;
+                        prevNode = document.getElementById(`${zulX},${zulY}`).style.backgroundColor;
+                        document.getElementById(`${x},${y}`).style.backgroundColor="green";
+                        document.getElementById(`${zulX},${zulY}`).style.width = "5vw";
+                        document.getElementById(`${zulX},${zulY}`).style.height = "5vw";
+                        if(document.getElementById(`${zulX},${zulY}`).className == "smietnik" && document.getElementById(`${zulX},${zulY}`).childNodes.length != 0)
+                        {
+                            if(event.target.className == "smietnik" && event.target.className != "lootitem")
+                            {
+                                console.log(event.target);
+                                document.getElementById(`${zulX},${zulY}`).getElementsByClassName("loot")[0].style.display = "block";
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        function closeloot(id)
+        {
+            document.getElementById(id).getElementsByClassName("loot")[0].style.display = "none";
+            console.log(this.target);
+        }
+        function zulInventoryToggle() {
+            if(document.getElementById('zulInv').style.display == "none")
+            {
+                for(i = 0; i < zulInv.length; i++)
+                {
+                            console.log(i);
+                            let usable;
+                            if(zulInv[i].cb)
+                            {                        
+                                usable = "usable";
+                            }
+                            else
+                            {
+                                usable = "unusable";
+                            }
+                            document.getElementById('zulInv').innerHTML += `<div class="invItem${usable}"><img src="img/${zulInv[i].img}"/>     <div class="name">${zulInv[i].name}</div><div class="value">Wartość: ${zulInv[i].value}</div>  <div class="amount">x${zulInv[i].amount}</div>  </div>`;
+                }
+                document.getElementById('zulInv').style.display = "block";
+                document.getElementById('zulInvToggle').style.left = "27vw";
+            }
+            else
+            {
+                document.getElementById('zulInv').style.display = "none";
+                document.getElementById('zulInvToggle').style.left = "1vw";
+                document.getElementById('zulInv').innerHTML = "";
+            }
+        }
+    </script>
+    <style>
+        body
+        {
+            color:white;
+        }
+        #map
+        {
+            background-color:#111111;
+            position: absolute;
+            width:100%;
+            height:100%;
+            top:0px;
+            left:0vw;
+            transition: opacity 1s;
+        }
+        #mapContainer
+        {
+            background-color:#111;
+            width:100%;
+            height:100%;
+            position: absolute;
+            top:0px;
+            left:0vw;
+        }
+        #map .smietnik
+        {
+            background-color:red;
+            width:3vw;
+            height:3vw;
+            position:absolute;
+        }
+        #map .puste
+        {
+            background-color:gray;
+            width:3vw;
+            height:3vw;
+            position:absolute;
+        }
+        #map .puste .loot
+        {
+            display:none;
+        }
+        .smietnik .loot
+        {
+            position:relative;
+            right:20vw;
+            background-color:#222222;
+            min-height: 6vw;
+            width:20vw;
+            display:none;
+            z-index:1;
+            display:none;
+            bottom:12vh;
+        }
+        .smietnik .loot .lootitem
+        {
+            position:relative;
+            cursor:pointer;
+            width:90%;
+            transition: background-color 0.5s;
+            opacity:0.99;
+        }
+        .smietnik .loot .lootitem:hover
+        {
+            background-color: #333333;
+        }
+        .smietnik .loot .lootitem img
+        {
+            height:5vw;
+            width:5vw;
+        }
+        .smietnik .loot .lootitem .name
+        {
+            display:inline;
+            position:absolute;
+            top:2vw;
+            left:7vw;
+            z-index:-1;
+            
+        }
+        .smietnik .loot .close
+        {
+            position:absolute;
+            right:0vw;
+            cursor:pointer;
+            font-size: 2vw;
+            top:0vw;
+            
+        }
+        #zulInv
+        {
+            position:absolute;
+            background-color:#444444;
+            left:2vw;
+            height:98vh;
+            width:25vw;
+            overflow-y: scroll;
+            overflow-x:hidden;
+            display:none;
+        }
+        #zulInv img
+        {
+            width:5vw;
+            height:5vw;
+        }
+        #zulInv .name
+        {
+            position:relative;
+            bottom:5vw;
+            left:6vw;
+        }
+        #zulInv .value
+        {
+            position:relative;
+            bottom:5vw;
+            left:6vw;
+        }
+        #zulInv .amount
+        {
+            position:relative;
+            left:6vw;
+            bottom:5vw;
+        }
+        #zulInv .invItemUsable
+        {
+            height:5vw;
+            margin-bottom:1vh;
+            cursor:pointer;
+            transition: background-color 0.3s;
+        }
+        #zulInv .invItemUsable:hover
+        {
+            height:5vw;
+            margin-bottom:1vh;
+            cursor:pointer;
+            background-color:#555555;
+        }
+        #zulInv .invItemUnusable
+        {
+            height:5vw;
+            margin-bottom:1vh;
+        }
+        #zulInv::-webkit-scrollbar-track
+        {
+            background-color: #222222;
+        }
+        #zulInv::-webkit-scrollbar-thumb
+        {
+            background-color: #555555;
+        }
+        #zulInv::-webkit-scrollbar
+        {
+            width:1em;
+        }
+        #zulInvToggle
+        {
+            background-color: #333333;
+            width:10vw;
+            z-index:3;
+            padding:1vw;
+            text-align:center;
+            position:absolute;
+            top:1vh;
+            left:1vw;
+            cursor:pointer;
+        }
+        #MapGenerateButton
+        {
+            position:absolute;
+            right:10px;
+            width:100px;
+            background-color:#333333;
+            padding:1vh;
+            cursor:pointer;
+            text-align:center;
+            z-index:3;
+        }
+        .laweczka
+        {
+            position:absolute;
+            background-color:yellow;
+            color:black;
+            padding:2vw;
+        }
+        #zulEnergy
+        {
+            position:absolute;
+            background-color:yellow;
+            z-index:3;
+            color:black;
+            width:8vw;
+            padding:1px;
+            text-align:center;
+            left:50%;
+            right:50%;
+            cursor:default;
+        }
+    </style>
+</head>
+<body>
+    <div id="zulInvToggle" onclick="zulInventoryToggle()">Ekwipunek</div>
+    <div id="MapGenerateButton" onclick="MapGenerate('first')">Prześpij sie na ławeczce</div>
+    <div id="zulEnergy">100</div>
+    <div id="mapContainer">
+    <div id="map">
+        
+        <!-- <div class="smietnik" style="left:20vw; top:30vh;"  id="1,1">    
+            <div class="loot">
+
+                <div class="lootitem" onclick="AddItem(1)">
+                    <img src="img/puszka.jpg" />
+                    <span class="name">Karpackie prasnac</span>
+                </div>
+                <div class="lootitem" onclick="AddItem(1)">
+                    <img src="img/puszka.jpg" />
+                    <span class="name">Karpackie prasnac</span>
+                </div>
+
+                <div class="close" onclick="closeloot('1,1')">X</div>
+            </div>
+        </div> <div onclick="Jump(1,1)" class="smietnik" style="left:20vw; top:30vh; opacity:0;" ></div>
+        <div class="smietnik" style="left:40vw; top:30vh;" onclick="Jump(2,1)" id="2,1"></div><div class="smietnik" style="left:40vw; top:30vh; opacity:0;" onclick="Jump(2,1)" id="2,1"></div>
+        <div class="smietnik" style="left:60vw; top:30vh;" onclick="Jump(3,1)" id="3,1"></div><div class="smietnik" style="left:60vw; top:30vh; opacity:0;" onclick="Jump(3,1)" id="3,1"></div>
+        <div class="smietnik" style="left:20vw; top:50vh;" onclick="Jump(1,2)" id="1,2"></div><div class="smietnik" style="left:20vw; top:50vh; opacity:0;" onclick="Jump(1,2)" id="1,2"></div>
+        <div class="smietnik" style="left:40vw; top:50vh;" onclick="Jump(2,2)" id="2,2"></div><div class="smietnik" style="left:40vw; top:50vh; opacity:0;" onclick="Jump(2,2)" id="2,2"></div>
+        <div class="smietnik" style="left:60vw; top:50vh;" onclick="Jump(3,2)" id="3,2"></div><div class="smietnik" style="left:60vw; top:50vh; opacity:0;" onclick="Jump(3,2)" id="3,2"></div>
+        <div class="smietnik" style="left:20vw; top:70vh;" onclick="Jump(1,3)" id="1,3"></div><div class="smietnik" style="left:20vw; top:70vh; opacity:0;" onclick="Jump(1,3)" id="1,3"></div>
+        <div class="smietnik" style="left:40vw; top:70vh;" onclick="Jump(2,3)" id="2,3"></div><div class="smietnik" style="left:40vw; top:70vh; opacity:0;" onclick="Jump(2,3)" id="2,3"></div>
+        <div class="smietnik" style="left:60vw; top:70vh;" onclick="Jump(3,3)" id="3,3"></div><div class="smietnik" style="left:60vw; top:70vh; opacity:0;" onclick="Jump(3,3)" id="3,3"></div>
+ 
+        !-->
+
+    </div>
+    </div>
+    <div id="zulInv" style="display:none;">
+        <!--
+        <div class="invItemUsable"><img src="img/puszka.jpg"/><div class="name">Puszka</div><div class="value">Wartość: 5</div></div>
+        <div class="invItemUsable"><img src="img/puszka.jpg"/><div class="name">Puszka</div><div class="value">Wartość: 5</div></div>
+        <div class="invItemUsable"><img src="img/puszka.jpg"/><div class="name">Puszka</div><div class="value">Wartość: 5</div></div>
+        <div class="invItemUnusable"><img src="img/puszka.jpg"/><div class="name">Puszka</div><div class="value">Wartość: 5</div></div>
+        <div class="invItemUnusable"><img src="img/puszka.jpg"/><div class="name">Puszka</div><div class="value">Wartość: 5</div></div>
+        <div class="invItemUnusable"><img src="img/puszka.jpg"/><div class="name">Puszka</div><div class="value">Wartość: 5</div></div>
+        <div class="invItemUnusable"><img src="img/puszka.jpg"/><div class="name">Puszka</div><div class="value">Wartość: 5</div></div>
+        <div class="invItemUnusable"><img src="img/puszka.jpg"/><div class="name">Puszka</div><div class="value">Wartość: 5</div></div>
+        <div class="invItemUnusable"><img src="img/puszka.jpg"/><div class="name">Puszka</div><div class="value">Wartość: 5</div></div>
+        <div class="invItemUnusable"><img src="img/puszka.jpg"/><div class="name">Puszka</div><div class="value">Wartość: 5</div></div>
+        <div class="invItemUnusable"><img src="img/puszka.jpg"/><div class="name">Puszka</div><div class="value">Wartość: 5</div></div>
+        <div class="invItemUnusable"><img src="img/puszka.jpg"/><div class="name">Puszka</div><div class="value">Wartość: 5</div></div>
+        <div class="invItemUnusable"><img src="img/puszka.jpg"/><div class="name">Puszka</div><div class="value">Wartość: 5</div></div>
+        !-->
+    </div>     
+</body>
+</html>
