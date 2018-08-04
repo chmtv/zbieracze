@@ -162,6 +162,7 @@
                 
                 setTimeout(() => {
                     zulEnergy = zulEnergyRefill;
+                    document.getElementById('zulEnergy').innerHTML = zulEnergy;
                     zulX = 0;
                     zulY = 0;
                     
@@ -202,10 +203,11 @@
                 {
                     if(zulEnergy >= 5)
                     {
-                        zulEnergy -= 5;
-                        document.getElementById("zulEnergy").innerHTML = zulEnergy;
+
+                        
                         if(document.getElementById(`${zulX},${zulY}`))
                         {
+
                             document.getElementById(`${zulX},${zulY}`).style.backgroundColor=prevNode;
                             document.getElementById(`${zulX},${zulY}`).style.outline = "solid 1px yellow";
                             document.getElementById(`${zulX},${zulY}`).style.width = "3vw";
@@ -222,8 +224,20 @@
                                     }
                                 }
                         }
+                        console.log(event.target);
+                        if(event.target.className != "close")
+                        {
+                            if(event.target != document.getElementById(`${zulX},${zulY}`))
+                            {
+                                zulEnergy -= 5;
+                            }
+                                document.getElementById("zulEnergy").innerHTML = zulEnergy;
+                        }
                         zulX = x;
                         zulY = y;
+
+                                
+                            
                         prevNode = document.getElementById(`${zulX},${zulY}`).style.backgroundColor;
                         document.getElementById(`${x},${y}`).style.backgroundColor="green";
                         document.getElementById(`${zulX},${zulY}`).style.width = "5vw";
@@ -232,7 +246,6 @@
                         {
                             if(event.target.className == "smietnik" && event.target.className != "lootitem")
                             {
-                                console.log(event.target);
                                 document.getElementById(`${zulX},${zulY}`).getElementsByClassName("loot")[0].style.display = "block";
                             }
                         }
@@ -243,7 +256,6 @@
         function closeloot(id)
         {
             document.getElementById(id).getElementsByClassName("loot")[0].style.display = "none";
-            console.log(this.target);
         }
         function zulInventoryToggle() {
             if(document.getElementById('zulInv').style.display == "none")
