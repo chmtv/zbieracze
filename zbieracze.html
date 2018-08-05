@@ -13,27 +13,57 @@
         let zulEnergyRefill = 100;
         let zulEnergyEndurance = 1;
 
+
+
         let itemlist = [
             {
                 //1
                 name: "Pusta Puszka",
                 value: 5,
-                img:"puszka.jpg",
-                
+                img:"puszka.png",
+                rarity: "gray"
             },
             {
                 //2
                 name: "Puszka Szlacheckie Mocne (resztka)",
                 value: 10,
-                img: "szlacheckie.png"
+                img: "szlacheckie.png",
+                cb: 'zulEnergy += 10; document.getElementById("zulEnergy").innerHTML = zulEnergy; zulInv[zulInv.indexOf(itemlist[1])].amount -= 1; AddItem(1); InvReset();',
+                rarity: "gray"
             },
             {
                 //3
+                name: "Puszka Karpackie Mocne (resztka)",
+                value: 10,
+                img: "karpackie.png",
+                cb: 'zulEnergy += 10; document.getElementById("zulEnergy").innerHTML = zulEnergy; zulInv[zulInv.indexOf(itemlist[2])].amount -= 1; AddItem(1); InvReset();',
+                rarity: "gray"
+            },
+            {
+                //4
+                name: "Butelka Szlacheckie Mocne (resztka)",
+                value: 7,
+                img: "szlacheckieButelka.jpg",
+                cb: 'zulEnergy += 10; document.getElementById("zulEnergy").innerHTML = zulEnergy; zulInv[zulInv.indexOf(itemlist[3])].amount -= 1; InvReset();',
+                rarity: "gray"
+            },
+            {
+                //5
+                name: "Butelka Karpackie Mocne (resztka)",
+                value: 7,
+                img: "karpackieButelka.png",
+                cb: 'zulEnergy += 10; document.getElementById("zulEnergy").innerHTML = zulEnergy; zulInv[zulInv.indexOf(itemlist[4])].amount -= 1; InvReset();',
+                rarity: "gray"
+            },
+            {
+                //6
                 name: "Miedziany Kabel",
                 value: 40,
-                img: "CUkabel.jpg"
+                img: "CUkabel.jpg",
+                rarity: "white"
             }
         ];
+
         function InvReset()
         {
             if(event.target.className == "name")
@@ -144,7 +174,7 @@
             {
 
                 itemid = Math.floor(Math.random() * lootlist.length);
-                loothtml += `<div class="lootitem" onclick="AddItem(${lootlist[itemid]})"><img src="img/${itemlist[lootlist[itemid] - 1].img}" /><span class="name">${itemlist[lootlist[itemid] - 1].name}</span></div>`;
+                loothtml += `<div class="lootitem"  style="border-right:${itemlist[lootlist[itemid] - 1].rarity} 1px solid" onclick="AddItem(${lootlist[itemid]})"><img  src="img/${itemlist[lootlist[itemid] - 1].img}" /><span class="name">${itemlist[lootlist[itemid] - 1].name}</span></div>`;
                 if(amount - i == 1)
                 {
                     loothtml += `<div class="close" onclick="closeloot('${coords}')">X</div></div>`;
@@ -153,6 +183,16 @@
                 
             }
         }
+                        function BasicGen(coord)
+                        {
+                            return GenerateLoot(                                    3,5,[1,1,1,1,1,1,1,1,
+                                                                                        2,2,2,2,2,2,
+                                                                                        3,3,3,3,3,3,
+                                                                                        4,4,4,4,4,4,
+                                                                                        5,5,5,5,5,5,
+                                                                                        6,6],
+                                                                                        coord);
+                        }
         function MapGenerate(name)
         {
             switch(name)
@@ -184,10 +224,10 @@
                     for(i = 0;i < fields.length; i++) {
                         if(fields[i] == 1) { fields[i] = ["puste"]}
                         if(fields[i] == 2) { fields[i] = ["puste"]}
-                        if(fields[i] == 3) { fields[i] = ["smietnik", "puszki"]}
+                        if(fields[i] == 3) { fields[i] = ["smietnik","a se puszki prasne"]}
                     }
                     
-                    document.getElementById("map").innerHTML = `<div class="laweczka" style=" left:5vw;                 top:15vh">Ławeczka</div>      <div class="${fields[0][0]}" style="left:20vw; top:30vh;" onclick="Jump(1,1)" id="1,1">${GenerateLoot(3,5,[1,1,2,2,3],"1,1")}</div><div class="${fields[1][0]}" style="left:40vw; top:30vh;" onclick="Jump(2,1)" id="2,1">${GenerateLoot(3,5,[1,1,2,2,3],"2,1")}</div><div class="${fields[2][0]}" style="left:60vw; top:30vh;" onclick="Jump(3,1)" id="3,1">${GenerateLoot(3,5,[1,1,2,2,3],"3,1")}</div><div class="${fields[3][0]}" style="left:20vw; top:50vh;" onclick="Jump(1,2)" id="1,2">${GenerateLoot(3,5,[1,1,2,2,3],"1,2")}</div><div class="${fields[4][0]}" style="left:40vw; top:50vh;" onclick="Jump(2,2)" id="2,2">${GenerateLoot(3,5,[1,1,2,2,3],"2,2")}</div><div class="${fields[5][0]}" style="left:60vw; top:50vh;" onclick="Jump(3,2)" id="3,2">${GenerateLoot(3,5,[1,1,2,2,3],"3,2")}</div><div class="${fields[6][0]}" style="left:20vw; top:70vh;" onclick="Jump(1,3)" id="1,3">${GenerateLoot(3,5,[1,1,2,2,3],"1,3")}</div><div class="${fields[7][0]}" style="left:40vw; top:70vh;" onclick="Jump(2,3)" id="2,3">${GenerateLoot(3,5,[1,1,2,2,3],"2,3")}</div><div class="${fields[8][0]}" style="left:60vw; top:70vh;" onclick="Jump(3,3)" id="3,3">${GenerateLoot(3,5,[1,1,2,2,3],"3,3")}</div><div class="${fields[9][0]}" style="left:80vw; top:70vh;" onclick="Jump(4,3)" id="4,3"></div>              <div class="${fields[10][0]}" style="left:95vw; top:70vh;" onclick="Jump(5,3)" id="5,3"></div>    <div class="${fields[11][0]}" style="left:95vw; top:50vh;" onclick="Jump(5,2)" id="5,2"></div>  <div class="${fields[12][0]}" style="left:95vw; top:30vh;" onclick="Jump(5,1)" id="5,1">${fields[12][1]}</div>`;
+                    document.getElementById("map").innerHTML = `<div class="laweczka" style=" left:5vw;                 top:15vh">Ławeczka</div>      <div class="${fields[0][0]}" style="left:20vw; top:30vh;" onclick="Jump(1,1)" id="1,1">${BasicGen("1,1")}</div><div class="${fields[1][0]}" style="left:40vw; top:30vh;" onclick="Jump(2,1)" id="2,1">${BasicGen("2,1")}</div><div class="${fields[2][0]}" style="left:60vw; top:30vh;" onclick="Jump(3,1)" id="3,1">${BasicGen("3,1")}</div><div class="${fields[3][0]}" style="left:20vw; top:50vh;" onclick="Jump(1,2)" id="1,2">${BasicGen("1,2")}</div><div class="${fields[4][0]}" style="left:40vw; top:50vh;" onclick="Jump(2,2)" id="2,2">${BasicGen("2,2")}</div><div class="${fields[5][0]}" style="left:60vw; top:50vh;" onclick="Jump(3,2)" id="3,2">${BasicGen("3,2")}</div><div class="${fields[6][0]}" style="left:20vw; top:70vh;" onclick="Jump(1,3)" id="1,3">${BasicGen("1,3")}</div><div class="${fields[7][0]}" style="left:40vw; top:70vh;" onclick="Jump(2,3)" id="2,3">${BasicGen("2,3")}</div><div class="${fields[8][0]}" style="left:60vw; top:70vh;" onclick="Jump(3,3)" id="3,3">${BasicGen("3,3")}</div><div class="${fields[9][0]}" style="left:80vw; top:70vh;" onclick="Jump(4,3)" id="4,3"></div><div class="${fields[10][0]}" style="left:95vw; top:70vh;" onclick="Jump(5,3)" id="5,3"></div>    <div class="${fields[11][0]}" style="left:95vw; top:50vh;" onclick="Jump(5,2)" id="5,2"></div>  <div class="${fields[12][0]}" style="left:95vw; top:30vh;" onclick="Jump(5,1)" id="5,1">${fields[12][1]}</div>`;
 
                     document.getElementById("map").style.opacity = 1;
                 },1000);
@@ -225,8 +265,9 @@
                                 }
                         }
                         console.log(event.target);
-                        if(event.target.className != "close")
+                        if(event.target.className != "close" && event.target.className != "loot" && event.target.className != "lootitem" && event.target.className != "name" && event.target.tagName != "IMG")
                         {
+                            
                             if(event.target != document.getElementById(`${zulX},${zulY}`))
                             {
                                 zulEnergy -= 5;
@@ -264,15 +305,23 @@
                 {
                             console.log(i);
                             let usable;
-                            if(zulInv[i].cb)
-                            {                        
-                                usable = "usable";
+                            if(zulInv[i].amount <= 0)
+                            {    
+
                             }
                             else
                             {
-                                usable = "unusable";
+                                if(zulInv[i].cb)
+                                {                        
+                                    usable = "Usable";
+                                    document.getElementById('zulInv').innerHTML += `<div class="invItem${usable}" onclick='${zulInv[i].cb}'><img src="img/${zulInv[i].img}"/>     <div class="name">${zulInv[i].name}</div><div class="value"  >Wartość: ${zulInv[i].value}</div>  <div class="amount"  >x${zulInv[i].amount}</div>  </div>`;
+                                }
+                                else
+                                {
+                                    usable = "Unusable";
+                                    document.getElementById('zulInv').innerHTML += `<div class="invItem${usable}"><img  src="img/${zulInv[i].img}"/>     <div class="name">${zulInv[i].name}</div><div class="value">Wartość: ${zulInv[i].value}</div>  <div class="amount">x${zulInv[i].amount}</div>  </div>`;
+                                }
                             }
-                            document.getElementById('zulInv').innerHTML += `<div class="invItem${usable}"><img src="img/${zulInv[i].img}"/>     <div class="name">${zulInv[i].name}</div><div class="value">Wartość: ${zulInv[i].value}</div>  <div class="amount">x${zulInv[i].amount}</div>  </div>`;
                 }
                 document.getElementById('zulInv').style.display = "block";
                 document.getElementById('zulInvToggle').style.left = "27vw";
@@ -346,6 +395,7 @@
             width:90%;
             transition: background-color 0.5s;
             opacity:0.99;
+
         }
         .smietnik .loot .lootitem:hover
         {
@@ -401,6 +451,7 @@
             position:relative;
             bottom:5vw;
             left:6vw;
+            
         }
         #zulInv .amount
         {
