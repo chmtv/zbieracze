@@ -1,7 +1,10 @@
 # zbieracze.github.io
 przetopimy se zlom prasnac
 
-Wersja 1.01beta
+
+# Wersja 
+
+# Wersja 1.01beta
 
 Prasniete bugi:
 -Energia nie resetuje sie po przespaniu sie na laweczce
