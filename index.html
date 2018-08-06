@@ -90,6 +90,7 @@
                                     zulInventoryToggle();
                                     zulInventoryToggle();
                                 }
+                                Save();
         }
         function AddItem(item) {
             if(zulEnergy >= 3)
@@ -333,6 +334,22 @@
                 document.getElementById('zulInv').innerHTML = "";
             }
         }
+
+
+        function Save()
+        {
+            localStorage.zulInv = JSON.stringify(zulInv)
+        }
+        function Load() 
+        {
+            if(localStorage.zulInv != "" && localStorage.zulInv != "[]")
+            {
+                 zulInv = JSON.parse(localStorage.zulInv);
+            }
+            
+        }
+        Load();
+        setInterval(Save(), 30000);
     </script>
     <style>
         body
@@ -533,11 +550,60 @@
             right:50%;
             cursor:default;
         }
+        #SaveWipeButton
+        {
+            z-index:3;
+            position:absolute;
+            bottom:0px;
+            right:0px;
+            background-color:#333;
+            padding:1vh;
+            cursor:pointer;
+        }
+        #SaveWipeConfirmation
+        {
+            position:absolute;
+            z-index:5;
+            background-color:#bbb;
+            width:50vw;
+            height:50vh;
+            left:25vw;
+            top:25vh;
+            text-align:center;
+            color:black;
+        }
+        #WipeMsg
+        {
+            position:relative;
+            top:5%;
+        }
+        #WipeYes
+        {
+            position:absolute;
+            left:20%;
+            top:40%;
+            background-color:lawngreen;
+            padding:5%;
+            width:10%;
+            cursor:pointer;
+        }
+        #WipeNo
+        {
+            position:absolute;
+            right:20%;
+            top:40%;
+            background-color:red;
+            padding:5%;
+            width:10%;
+            cursor:pointer;
+        }
     </style>
 </head>
 <body>
     <div id="zulInvToggle" onclick="zulInventoryToggle()">Ekwipunek</div>
     <div id="MapGenerateButton" onclick="MapGenerate('first')">Prześpij sie na ławeczce</div>
+    <div id="SaveWipeButton" onclick="document.getElementById('SaveWipeConfirmation').style.display='block'">Usuń zapis gry</div>
+    <div id="SaveWipeConfirmation" style="display:none;"><div id="WipeMsg">Czy na pewno chcesz to zrobić?</div><div id="WipeYes" onclick="localStorage.clear(); document.getElementById('SaveWipeConfirmation').style.display='none'; location.reload()">Tak</div><div id="WipeNo" onclick="document.getElementById('SaveWipeConfirmation').style.display='none';">Nie</div></div>
     <div id="zulEnergy">100</div>
     <div id="mapContainer">
     <div id="map">
