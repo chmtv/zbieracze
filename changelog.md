@@ -7,7 +7,7 @@ przetopimy se zlom prasnac
 ## A se jebne karpackie
 
 * Naprawiono wiecej bledow z energia
-* Dodano butelke szlacheckiego oraz butelke i pusze karpackiego
+* Dodano butelke szlacheckiego oraz butelke i puszke karpackiego
 * Zmieniono grafiki niektorych przedmiotow, kilka grafik wciaz tymczasowe
 * Dodano możliwość picia resztek szlacheckiego i karpackiego
 * Dodano automatyczne zapisywanie, ładowanie gry oraz możliwość usuniecia zapisu
