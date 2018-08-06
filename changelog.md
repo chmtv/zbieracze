@@ -4,12 +4,12 @@ przetopimy se zlom prasnac
 
 # Wersja 1.02beta
 
-Prasniete bugi:
--Chuj jebanie energia kutasie jeb sie
+### Prasniete bugi:
+* Chuj jebanie energia kutasie jeb sie
 
 
 # Wersja 1.01beta
 
-Prasniete bugi:
+### Prasniete bugi:
 * Energia nie resetuje sie po przespaniu sie na laweczce
 * Odebrana energia po kliknieciu w X przy liscie lupow i w miejsce w ktorym sie jest
