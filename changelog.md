@@ -11,6 +11,7 @@ przetopimy se zlom prasnac
 * Zmieniono grafiki niektorych przedmiotow, kilka grafik wciaz tymczasowe
 * Dodano możliwość picia resztek szlacheckiego i karpackiego
 * Dodano automatyczne zapisywanie, ładowanie gry oraz możliwość usuniecia zapisu
+* Zajebiste bordery sila zerzniete z borderlandow i tylko w smietniku bo jestem zjebany i zapomnialem do eq dac
 
 # Wersja 1beta
 ## Se kurwa pogrzebie
