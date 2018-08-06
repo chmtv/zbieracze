@@ -1,6 +1,9 @@
 # zbieracze.github.io
 przetopimy se zlom prasnac
 
+# Wersja 2.1beta
+
+Niech sie pierdoli to zjebane inventory kutas pierdolony
 
 # Wersja 2beta
 
