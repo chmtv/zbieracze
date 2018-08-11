@@ -52,7 +52,7 @@
                 name: "Butelka Szlacheckie Mocne (resztka)",
                 value: 7,
                 img: "szlacheckieButelka.jpg",
-                cb: 'zulEnergy += 10; document.getElementById("zulEnergy").innerHTML = zulEnergy;                                 for(i = 0; i < zulInv.length; i++){if(zulInv[i].id == itemlist[3].id){zulInv[i].amount -= 1;}}            Save();',
+                cb: 'zulEnergy += 10; document.getElementById("zulEnergy").innerHTML = zulEnergy;                                 for(i = 0; i < zulInv.length; i++){if(zulInv[i].id == itemlist[3].id){zulInv[i].amount -= 1;}}           InvReset(1); Save();',
                 rarity: "gray",
                 exp: 3,
             },
@@ -62,7 +62,7 @@
                 name: "Butelka Karpackie Mocne (resztka)",
                 value: 7,
                 img: "karpackieButelka.png",
-                cb: 'zulEnergy += 10; document.getElementById("zulEnergy").innerHTML = zulEnergy;                                 for(i = 0; i < zulInv.length; i++){if(zulInv[i].id == itemlist[4].id){zulInv[i].amount -= 1;}}           Save();',
+                cb: 'zulEnergy += 10; document.getElementById("zulEnergy").innerHTML = zulEnergy;                                 for(i = 0; i < zulInv.length; i++){if(zulInv[i].id == itemlist[4].id){zulInv[i].amount -= 1;}}           InvReset(1); Save();',
                 rarity: "gray",
                 exp: 3,
             },
@@ -326,6 +326,7 @@
             console.log("mode",rmode);
                                 if(event.target.className == "name")
                                 {
+                                    console.log("class name");
                                     event.target.parentNode.style.display = "none";
                                     if(rmode != 1)
                                     {
@@ -418,7 +419,8 @@
                                     ZbieranieLevel();
                                 }
                                 Save();
-            
+                                zulInventoryToggle();
+                                    zulInventoryToggle();
         }
         function AddItem(item,resetmode) {
             if(zulEnergy >= zbieranieEnergy)
@@ -441,7 +443,6 @@
                             else
                             {
                                 zulInv[i].amount += 1;
-                                console.log("pies igcia");
                                 zbieranieExp += zulInv[i].exp;
                                 GeneralExp += zulInv[i].exp;
                                 InvReset(resetmode);
@@ -468,6 +469,7 @@
                         InvReset(resetmode);
                     }
                 }
+                InvReset(resetmode);
             }
         }
 
