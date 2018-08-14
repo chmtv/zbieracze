@@ -322,11 +322,8 @@
 
         function InvReset(rmode)
         {
-            console.log(event.target);
-            console.log("mode",rmode);
                                 if(event.target.className == "name")
                                 {
-                                    console.log("class name");
                                     event.target.parentNode.style.display = "none";
                                     if(rmode != 1)
                                     {
@@ -335,7 +332,6 @@
                                             {
                                                 if(zbieranieRandom > 0.90)
                                                 {
-                                                    console.log("a se prasnelo");
                                                     zulEnergy -= zbieranieEnergy / 2;
                                                     ZbieranieLevel();
                                                 }
@@ -351,7 +347,6 @@
                                                     ZbieranieLevel();
                                             }
                                             
-                                            
                                     }
                                     document.getElementById("zulEnergy").innerHTML = zulEnergy.toFixed(2);
                                 }
@@ -365,7 +360,7 @@
                                             {
                                                 if(zbieranieRandom > 0.90)
                                                 {
-                                                    console.log("a se prasnelo");
+
                                                     zulEnergy -= zbieranieEnergy / 2;
                                                     ZbieranieLevel();
                                                 }
@@ -393,7 +388,6 @@
                                             {
                                                 if(zbieranieRandom > 0.90)
                                                 {
-                                                    console.log("a se prasnelo");
                                                     zulEnergy -= zbieranieEnergy / 2;
                                                     ZbieranieLevel();
                                                 }
@@ -420,7 +414,7 @@
                                 }
                                 Save();
                                 zulInventoryToggle();
-                                    zulInventoryToggle();
+                                zulInventoryToggle();
         }
         function AddItem(item,resetmode) {
             if(zulEnergy >= zbieranieEnergy)
@@ -428,17 +422,19 @@
                 let clone = JSON.parse(JSON.stringify(itemlist[item - 1]));
                 if(zulInv.filter((inv) => {return inv.id == clone.id})[0] != undefined)
                 {
+                    
                     for(i = 0; i < zulInv.length; i++)
                     {
+                        
                         if(zulInv[i].id == clone.id)
                         {
                             if(zulInv[i].amount == undefined)
                             {
                                 zbieranieExp += zulInv[i].exp;
                                 GeneralExp += zulInv[i].exp;
-                                console.log('pies igora');
-                                    zulInv[i].amount = 1; 
+                                    zulInv[i].amount = 1;
                                 InvReset(resetmode);
+                                break;
                             }
                             else
                             {
@@ -446,13 +442,13 @@
                                 zbieranieExp += zulInv[i].exp;
                                 GeneralExp += zulInv[i].exp;
                                 InvReset(resetmode);
+                                break;
                             }
                         }
                     }
                 }
                 else
                 {
-                    console.log("spierdalaj");
                     let pushIndex = zulInv.push(clone) - 1;
                     if(zulInv[pushIndex].amount == undefined)
                     {
@@ -469,7 +465,7 @@
                         InvReset(resetmode);
                     }
                 }
-                InvReset(resetmode);
+                
             }
         }
 
@@ -581,7 +577,6 @@
                             {
                                 if(jumpL >= 5 && Math.random() > 0.90)
                                 {
-                                    console.log("pizgaj stond kapiszonie");
                                     zulEnergy -= jumpEnergy / 2;
                                 }
                                 else
@@ -592,7 +587,6 @@
                                 {
                                     jumpExp += 10;
                                     GeneralExp += 10;
-                                    console.log("10 general exp");
                                 }
                             }
                                 document.getElementById("zulEnergy").innerHTML = zulEnergy;
@@ -628,7 +622,6 @@
             {
                 for(i = 0; i < zulInv.length; i++)
                 {
-                            console.log(i);
                             let usable;
                             if(zulInv[i].amount <= 0)
                             {    
@@ -679,7 +672,42 @@
                 document.getElementById('StatsToggle').style.left = "14vw";
             }
         }
-
+        function Intro()
+        {
+            if(document.getElementById('gownoWarning').style.display == "block")
+            {
+            document.getElementById('intro').style.display = "block";
+            document.getElementById('intro').play();
+            document.getElementById('intro').addEventListener('ended', () => {document.getElementById('gownoWarning').style.display = "none";});
+            }
+            else
+            {
+            document.getElementById('gownoWarning').getElementsByClassName('MsgYes')[0].style = "display:block;";
+            document.getElementById('gownoWarning').getElementsByClassName('MsgNo')[0].style = "display:block;";
+            document.getElementById('intro').style.display = "none";
+            document.getElementById('intro').pause();
+            }
+        }
+        function IntroToggle()
+        {
+            let warning = document.getElementById('gownoWarning');
+            if(warning.style.display == "none")
+            {
+                warning.style.display='block';                                   
+                warning.getElementsByClassName('MsgYes')[0].style = 'display:block;';
+                warning.getElementsByClassName('MsgNo')[0].style = 'display:block;';
+                document.getElementById('intro').style.display = 'none';
+                document.getElementById('intro').pause();
+            }
+            else
+            {
+                warning.style.display='none';                                   
+                // warning.getElementsByClassName('MsgYes')[0].style = 'display:block;';
+                // warning.getElementsByClassName('MsgNo')[0].style = 'display:block;';
+                document.getElementById('intro').style.display = 'none';
+                document.getElementById('intro').pause();
+            }
+        }
         function Save()
         {
             localStorage.zulInv = JSON.stringify(zulInv);
@@ -930,6 +958,7 @@
             right:0px;
             background-color:#333;
             padding:1vh;
+            width:8vw;
             cursor:pointer;
         }
         #SaveWipeConfirmation
@@ -944,12 +973,12 @@
             text-align:center;
             color:black;
         }
-        #WipeMsg
+        .WipeMsg
         {
             position:relative;
             top:5%;
         }
-        #WipeYes
+        .WipeYes
         {
             position:absolute;
             left:20%;
@@ -959,7 +988,7 @@
             width:10%;
             cursor:pointer;
         }
-        #WipeNo
+        .WipeNo
         {
             position:absolute;
             right:20%;
@@ -993,7 +1022,7 @@
             display:none;
             z-index:1;
         }
-        #Msg
+        .Msg
         {
             position:absolute;
             z-index:5;
@@ -1005,30 +1034,50 @@
             text-align:center;
             color:black;
         }
-        #MsgContent
+        .MsgContent
         {
             position:relative;
             top:5%;
         }
-        #MsgYes
+        .MsgYes
         {
             position:absolute;
             left:20%;
-            top:40%;
             background-color:lawngreen;
             padding:5%;
             width:10%;
             cursor:pointer;
         }
-        #MsgNo
+        .MsgNo
         {
             position:absolute;
             right:20%;
-            top:40%;
+            
             background-color:red;
             padding:5%;
             width:10%;
             cursor:pointer;
+        }
+        .gownoYN
+        {
+            bottom:3vh;
+        }
+        #gownoButton
+        {
+            z-index:3;
+            position:absolute;
+            bottom:5vh;
+            width:8vw;
+            right:0px;
+            text-align:center;
+            background-color:#333;
+            padding:1vh;
+            cursor:pointer;
+        }
+        #intro
+        {
+            margin-left:auto;
+            margin-right:auto;
         }
     </style>
 </head>
@@ -1038,8 +1087,20 @@
     <div id="stats" style="display:none;"></div>
     <div id="MapGenerateButton" onclick="MapGenerate('first')">Prześpij sie na ławeczce</div>
     <div id="SaveWipeButton" onclick="document.getElementById('SaveWipeConfirmation').style.display='block'">Usuń zapis gry</div>
-    <div id="SaveWipeConfirmation" style="display:none;"><div id="WipeMsg">Czy na pewno chcesz to zrobić?</div><div id="WipeYes" onclick="localStorage.clear(); document.getElementById('SaveWipeConfirmation').style.display='none'; location.reload()">Tak</div><div id="WipeNo" onclick="document.getElementById('SaveWipeConfirmation').style.display='none';">Nie</div></div>
-    <div id="Msg" style="display:none;"><div id="MsgContent">Czy na pewno chcesz to zrobić?</div><div id="MsgYes" onclick="document.getElementById('Msg').style.display='none';">OK</div></div>
+    <div id="SaveWipeConfirmation" style="display:none;"><div class="WipeMsg">Czy na pewno chcesz to zrobić?</div><div class="WipeYes" onclick="localStorage.clear(); document.getElementById('SaveWipeConfirmation').style.display='none'; location.reload()">Tak</div><div class="WipeNo" onclick="document.getElementById('SaveWipeConfirmation').style.display='none';">Nie</div></div>
+    <div class="Msg" style="display:none;"><div id="MsgContent">Czy na pewno chcesz to zrobić?</div><div id="MsgYes" onclick="document.getElementById('Msg').style.display='none';">OK</div></div>
+
+    <div id="gownoButton" onclick="IntroToggle()">Intro</div>
+    <div id="gownoWarning" class="Msg" style="display:none; height:50vw;">
+        <div class="MsgContent">Czy na pewno chcesz to zrobić? Przejście dalej może skutkować poważną traumą i depresją do końca życia!</div>
+        <div class="MsgYes gownoYN" style="bottom:0px;" onclick="Intro()">Tak :(</div>
+        <div class="MsgNo gownoYN" style="bottom:0px;" onclick="IntroToggle()">Nie :)</div>
+        <video id="intro" width="600px" height="400px" style="display:none">
+            <source src="intro.mp4" type="video/mp4"></source>
+        </video>
+        <div></div>
+    </div>
+
     <div id="zulEnergy">100.00</div>
     <div id="mapContainer">
     <div id="map">
@@ -1073,21 +1134,7 @@
     </div>
     </div>
     <div id="zulInv" style="display:none;">
-        <!--
-        <div class="invItemUsable"><img src="img/puszka.jpg"/><div class="name">Puszka</div><div class="value">Wartość: 5</div></div>
-        <div class="invItemUsable"><img src="img/puszka.jpg"/><div class="name">Puszka</div><div class="value">Wartość: 5</div></div>
-        <div class="invItemUsable"><img src="img/puszka.jpg"/><div class="name">Puszka</div><div class="value">Wartość: 5</div></div>
-        <div class="invItemUnusable"><img src="img/puszka.jpg"/><div class="name">Puszka</div><div class="value">Wartość: 5</div></div>
-        <div class="invItemUnusable"><img src="img/puszka.jpg"/><div class="name">Puszka</div><div class="value">Wartość: 5</div></div>
-        <div class="invItemUnusable"><img src="img/puszka.jpg"/><div class="name">Puszka</div><div class="value">Wartość: 5</div></div>
-        <div class="invItemUnusable"><img src="img/puszka.jpg"/><div class="name">Puszka</div><div class="value">Wartość: 5</div></div>
-        <div class="invItemUnusable"><img src="img/puszka.jpg"/><div class="name">Puszka</div><div class="value">Wartość: 5</div></div>
-        <div class="invItemUnusable"><img src="img/puszka.jpg"/><div class="name">Puszka</div><div class="value">Wartość: 5</div></div>
-        <div class="invItemUnusable"><img src="img/puszka.jpg"/><div class="name">Puszka</div><div class="value">Wartość: 5</div></div>
-        <div class="invItemUnusable"><img src="img/puszka.jpg"/><div class="name">Puszka</div><div class="value">Wartość: 5</div></div>
-        <div class="invItemUnusable"><img src="img/puszka.jpg"/><div class="name">Puszka</div><div class="value">Wartość: 5</div></div>
-        <div class="invItemUnusable"><img src="img/puszka.jpg"/><div class="name">Puszka</div><div class="value">Wartość: 5</div></div>
-        !-->
+        
     </div>     
 </body>
 </html>
