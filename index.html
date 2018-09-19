@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-            <!-- Global site tag (gtag.js) - Google Analytics -->
+            <!-- Global site tag (gtag.js) - Google Analytics 
             <script async src="https://www.googletagmanager.com/gtag/js?id=UA-124831747-1"></script>
             <script>
             window.dataLayer = window.dataLayer || [];
@@ -9,16 +9,18 @@
             gtag('js', new Date());
 
             gtag('config', 'UA-124831747-1');
-            </script>
+            </script> -->
 
     <meta charset="utf-8" />
     <meta name="description" content="Zbieracze to gra o żulu który grzebie w śmieciach w celu poszukiwania wartościowych przedmiotów i zostania najlepszym żulem w okolicy" />
-            
-            
-    <title>Zbieracze - Gra</title>
+    <meta name="author" content="Oddział Specjalnej Troski"/>
+    <title>Zbieracze</title>
+
     <script>
         let zulX = 0;
         let zulY = 0;
+        let SleepX;
+        let SleepY;
         let PrevNode;
         let fields;
         let zulInv = [];
@@ -29,15 +31,118 @@
         let jumpEnergy = 20;
 
         let zulEq = {
-            head: null,
-            torso: {
-                zulEnergy: 0,
+            /*
+            zulEnergyRefill: 0,
+            jumpEnergy: 0,
+            zbieranieEnergy: 0,
+            */
+            head: {
+                item: {
+                    zulEnergyRefill: 0,
+                    jumpEnergy: 0,
+                    zbieranieEnergy: 0,
+                },
             },
-            arms: null,
-            gloves: null,
-            legs: null,
-            boots: null,
+            torso: {
+                item: {
+                    zulEnergyRefill: 0,
+                    jumpEnergy: 0,
+                    zbieranieEnergy: 0,
+                },
+            },
+            gloves: {
+                item: {
+                    zulEnergyRefill: 0,
+                    jumpEnergy: 0,
+                    zbieranieEnergy: 0,
+                },
+            },
+            legs: {
+                item: {
+                    zulEnergyRefill: 0,
+                    jumpEnergy: 0,
+                    zbieranieEnergy: 0,
+                },
+            },
+            boots: {
+                item: {
+                    zulEnergyRefill: 0,
+                    jumpEnergy: 0,
+                    zbieranieEnergy: 0,
+                },
+            },
         };
+
+        function EquipItem(bodypart,itemid) { // Equips an item, if the itemID is 0, it dequips the item
+            Save();
+            for(i = 0; i < zulInv.length; i++)
+            {
+                
+                if(itemid == 0)
+                {
+                    AddItem(bodypart.item.id,1);
+                    bodypart.item = {};
+                    bodypart.item.zulEnergyRefill = 0;
+                    bodypart.item.jumpEnergy = 0;
+                    bodypart.item.zbieranieEnergy = 0;
+                    zulInventoryToggle();
+                    zulInventoryToggle();
+                }
+                if(itemid != 0 && zulInv[i].id == itemid)
+                {
+                    if(bodypart.item.id == undefined)
+                    {
+                        bodypart.item = itemlist[itemid - 1];
+                        zulInv.splice(i,1);
+                    }
+                    else
+                    {
+                        AddItem(bodypart.item.id,1);
+                        bodypart.item = itemlist[itemid - 1];
+                        zulInv.splice(zulInv.findIndex((item) => {return item.id == itemid}),1);
+                    }
+                    zulInventoryToggle();
+                    zulInventoryToggle();
+                    
+                }
+            }
+        };
+        
+
+        let jumpEnergyPenalty = 0;
+        let zbieranieEnergyPenalty = 0;
+
+        function GetZulEnergyRefill()
+        {
+            return zulEnergyRefill + zulEq.head.item.zulEnergyRefill + zulEq.torso.item.zulEnergyRefill + zulEq.gloves.item.zulEnergyRefill + zulEq.legs.item.zulEnergyRefill + zulEq.boots.item.zulEnergyRefill;
+        }
+        function GetjumpEnergy()
+        {
+            let jenergy = jumpEnergy - zulEq.head.item.jumpEnergy - zulEq.torso.item.jumpEnergy - zulEq.gloves.item.jumpEnergy - zulEq.legs.item.jumpEnergy - zulEq.boots.item.jumpEnergy + jumpEnergyPenalty;
+
+            if(jenergy >= 0)
+            {
+                return jenergy;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        function GetzbieranieEnergy()
+        {
+            let zenergy = zbieranieEnergy - zulEq.head.item.zbieranieEnergy - zulEq.torso.item.zbieranieEnergy - zulEq.gloves.item.zbieranieEnergy - zulEq.legs.item.zbieranieEnergy - zulEq.boots.item.zbieranieEnergy + zbieranieEnergyPenalty;
+
+            if(zenergy >= 0)
+            {
+                return zenergy;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
 
         let itemlist = [
             {
@@ -102,12 +207,194 @@
                 //7
                 id: 7,
                 name: "Brudny sweterek",
-                value: 100,
+                value: 20,
                 img: "bsweter.png",
-                cb: '',
+                cb: 'EquipItem(zulEq.torso,7);',
                 rarity: "white",
-                exp: 10
-            }
+                exp: 10,
+                equipable: true,
+                tooltipText: "Brudny sweter znaleziony w śmietniku",
+
+                zulEnergyRefill: 20,
+                jumpEnergy: 0,
+                zbieranieEnergy: 0,
+            },
+            {
+                //8
+                id: 8,
+                name: "Czysty sweterek",
+                value: 20,
+                img: "bsweter.png",
+                cb: 'EquipItem(zulEq.torso,8);',
+                rarity: "green",
+                exp: 10,
+                equipable: true,
+                tooltipText: "Prosto ze śmietnika, ale czysty",
+
+                zulEnergyRefill: 50,
+                jumpEnergy: 0,
+                zbieranieEnergy: 0,
+            },
+            {
+                //9
+                id: 9,
+                name: "Brudna zimowa czapka",
+                value: 20,
+                img: "bzczapka.png",
+                cb: "EquipItem(zulEq.head,9);",
+                rarity: "white",
+                exp: 10,
+                equipable: true,
+                tooltipText: "Zimowa czapka wygrzebana ze śmieci",
+
+                zulEnergyRefill: 10,
+                jumpEnergy: 0.5,
+                zbieranieEnergy: 0.5
+            },
+            {
+                //10
+                id:10,
+                name: "Czysta zimowa czapka",
+                value: 20,
+                img: "bzczapka.png",
+                cb: "EquipItem(zulEq.head,10);",
+                rarity: "green",
+                exp: 10,
+                equipable: true,
+                tooltipText: "Świetna czapeczka prosto ze śmietnika",
+
+                zulEnergyRefill: 20,
+                jumpEnergy: 1,
+                zbieranieEnergy: 1
+            },
+            {
+                //11
+                id:11,
+                name: "Brudne zimowe rękawice",
+                value: 20,
+                img: "bZimRekawice.jpg",
+                cb: "EquipItem(zulEq.gloves,11);",
+                rarity: "white",
+                exp: 10,
+                equipable: true,
+                tooltipText: "Nakraść sobie nimi można",
+
+                zulEnergyRefill: 0,
+                jumpEnergy: 0,
+                zbieranieEnergy: 0.5
+            },
+            {
+                //12
+                id:12,
+                name: "Czyste zimowe rękawice",
+                value: 20,
+                img: "bZimRekawice.jpg",
+                cb: "EquipItem(zulEq.gloves,12);",
+                rarity: "green",
+                exp: 10,
+                equipable: true,
+                tooltipText: "Nakraść sobie można jeszcze lepiej niż brudnymi",
+
+                zulEnergyRefill: 0,
+                jumpEnergy: 0,
+                zbieranieEnergy: 1
+            },
+            {
+                //13
+                id:13,
+                name: "Brudne jeansy",
+                value: 20,
+                img: "bJeans.jpg",
+                cb: "EquipItem(zulEq.legs,13);",
+                rarity: "white",
+                exp: 10,
+                equipable: true,
+                tooltipText: "Stare dobre jeansy świetne do grzebiania w śmieciach",
+
+                zulEnergyRefill: 0,
+                jumpEnergy: 0.5,
+                zbieranieEnergy: 0
+            },
+            {
+                //14
+                id:14,
+                name: "Czyste jeansy",
+                value: 20,
+                img: "bJeans.jpg",
+                cb: "EquipItem(zulEq.legs,14);",
+                rarity: "green",
+                exp: 10,
+                equipable: true,
+                tooltipText: "Eleganckie jeansy w których można grzebać w śmieciach",
+
+                zulEnergyRefill: 0,
+                jumpEnergy: 1,
+                zbieranieEnergy: 0
+            },
+            {
+                //15
+                id:15,
+                name: "Brudne klapki",
+                value: 20,
+                img: "klapki.jpg",
+                cb: "EquipItem(zulEq.boots,15);",
+                rarity: "white",
+                exp: 10,
+                equipable: true,
+                tooltipText: "Trudno sie szuka na Google Grafice zdjec klapek z przezroczystym tlem bo wyskakuja kuce i memy",
+
+                zulEnergyRefill: 0,
+                jumpEnergy: 0.5,
+                zbieranieEnergy: 0
+            },
+            {
+                //16
+                id:16,
+                name: "Czyste klapki",
+                value: 20,
+                img: "klapki.jpg",
+                cb: "EquipItem(zulEq.boots,16);",
+                rarity: "green",
+                exp: 10,
+                equipable: true,
+                tooltipText: "Trudno sie szuka na Google Grafice zdjec klapek z przezroczystym tlem bo wyskakuja kuce i memy",
+
+                zulEnergyRefill: 0,
+                jumpEnergy: 1,
+                zbieranieEnergy: 0
+            },
+            {
+                //17
+                id:17,
+                name: "KLAPECZKI!",
+                value: 200,
+                img: "klapeczki.jpg",
+                cb: "EquipItem(zulEq.boots,17);",
+                rarity: "purple",
+                exp: 50,
+                equipable: true,
+                tooltipText: "KLAPECZKI KURWA ZA ZLOTOWKE JE KURWA SPRZEDAM NA PODSTAWOWCE KURWA KLAPECZKI JAK CHUJ KURWA ZAJEBISTE BIERZ KLAPECZKI",
+
+                zulEnergyRefill: 0,
+                jumpEnergy: 3,
+                zbieranieEnergy: 0
+            },
+            {
+                //18
+                id:18,
+                name: "Czapka Sławka 17 Volta",
+                value: 200,
+                img: "czapkaslawka.jpg",
+                cb: "EquipItem(zulEq.head,18);",
+                rarity: "purple",
+                exp: 50,
+                equipable: true,
+                tooltipText: "Legendy głoszą, że tę czapkę nosił legendarny Sławek 17 Volta",
+
+                zulEnergyRefill: 0,
+                jumpEnergy: 1,
+                zbieranieEnergy: 0
+            },
         ];
 
         let GeneralExp = 0;
@@ -130,7 +417,7 @@
                 { }
                 else
                 {
-                    document.getElementById("Msg").childNodes[0].innerHTML = "Otrzymałeś poziom 2 zbierania<br>Energia potrzebna do zbierania zmiejszona o 0.5";
+                    document.getElementById("Msg").childNodes[0].innerHTML = "Otrzymałeś poziom 2 zbierania<br>Energia potrzebna do zbierania zmniejszona o 0.5";
                     document.getElementById("Msg").style.display = "block";
                     localStorage.zbieranieL = 2;
                     localStorage.zbieranie2flag = true;
@@ -145,7 +432,7 @@
                 { }
                 else
                 {
-                    document.getElementById("Msg").childNodes[0].innerHTML = "Otrzymałeś poziom 3 zbierania<br>Energia potrzebna do zbierania zmiejszona o 0.5";
+                    document.getElementById("Msg").childNodes[0].innerHTML = "Otrzymałeś poziom 3 zbierania<br>Energia potrzebna do zbierania zmniejszona o 0.5";
                     document.getElementById("Msg").style.display = "block";
                     localStorage.zbieranieL = 3;
                     localStorage.zbieranie3flag = true;
@@ -160,7 +447,7 @@
                 { }
                 else
                 {
-                    document.getElementById("Msg").childNodes[0].innerHTML = "Otrzymałeś poziom 4 zbierania<br>Energia potrzebna do zbierania zmiejszona o 0.5";
+                    document.getElementById("Msg").childNodes[0].innerHTML = "Otrzymałeś poziom 4 zbierania<br>Energia potrzebna do zbierania zmniejszona o 0.5";
                     document.getElementById("Msg").style.display = "block";
                     localStorage.zbieranieL = 4;
                     localStorage.zbieranie4flag = true;
@@ -175,7 +462,7 @@
                 { }
                 else
                 {
-                    document.getElementById("Msg").childNodes[0].innerHTML = "Otrzymałeś poziom 5 zbierania<br>Energia potrzebna do zbierania zmiejszona o 1<br>10% szansy na zużycie 50% mniej energii przy zebraniu";
+                    document.getElementById("Msg").childNodes[0].innerHTML = "Otrzymałeś poziom 5 zbierania<br>Energia potrzebna do zbierania zmniejszona o 1<br>10% szansy na zużycie 50% mniej energii przy zebraniu";
                     document.getElementById("Msg").style.display = "block";
                     localStorage.zbieranieL = 5;
                     localStorage.zbieranie5flag = true;
@@ -188,12 +475,12 @@
             GeneralLevel();
             if(jumpExp >= 250 && jumpL < 2)
             {
-                jumpEnergy -= 0.5;
+                jumpEnergy -= 1;
                 jumpL = 2;
 
                 if(localStorage.jump2flag != "true")
                 {
-                    document.getElementById("Msg").childNodes[0].innerHTML = "Otrzymałeś poziom 2 podróżowania<br>Energia potrzebna do podróżowania zmiejszona o 0.5";
+                    document.getElementById("Msg").childNodes[0].innerHTML = "Otrzymałeś poziom 2 podróżowania<br>Energia potrzebna do podróżowania zmniejszona o 1";
                     document.getElementById("Msg").style.display = "block";
                     localStorage.jumpL = 2;
                     localStorage.jump2flag = true;
@@ -201,12 +488,12 @@
             }
             if(jumpExp >= 600 && jumpL < 3)
             {
-                jumpEnergy -= 0.5;
+                jumpEnergy -= 1;
                 jumpL = 3;
 
                 if(localStorage.jump3flag != "true")
                 {
-                    document.getElementById("Msg").childNodes[0].innerHTML = "Otrzymałeś poziom 3 podróżowania<br>Energia potrzebna do podróżowania zmiejszona o 0.5";
+                    document.getElementById("Msg").childNodes[0].innerHTML = "Otrzymałeś poziom 3 podróżowania<br>Energia potrzebna do podróżowania zmniejszona o 1";
                     document.getElementById("Msg").style.display = "block";
                     localStorage.jumpL = 3;
                     localStorage.jump3flag = true;
@@ -214,12 +501,12 @@
             }
             if(jumpExp >= 1000 && jumpL < 4)
             {
-                jumpEnergy -= 0.5;
+                jumpEnergy -= 1;
                 jumpL = 4;
 
                 if(localStorage.jump4flag != "true")
                 {
-                    document.getElementById("Msg").childNodes[0].innerHTML = "Otrzymałeś poziom 4 podróżowania<br>Energia potrzebna do podróżowania zmiejszona o 0.5";
+                    document.getElementById("Msg").childNodes[0].innerHTML = "Otrzymałeś poziom 4 podróżowania<br>Energia potrzebna do podróżowania zmniejszona o 1";
                     document.getElementById("Msg").style.display = "block";
                     localStorage.jumpL = 4;
                     localStorage.jump4flag = true;
@@ -227,12 +514,12 @@
             }
             if(jumpExp >= 1500 && jumpL < 5)
             {
-                jumpEnergy -= 0.5;
+                jumpEnergy -= 1;
                 jumpL = 5;
 
                 if(localStorage.jump5flag != "true")
                 {
-                    document.getElementById("Msg").childNodes[0].innerHTML = "Otrzymałeś poziom 5 podróżowania<br>10% szansy na zabranie o połowe mniej energii przy podróży";
+                    document.getElementById("Msg").childNodes[0].innerHTML = "Otrzymałeś poziom 5 podróżowania<br>Energia potrzebna do podróżowania zmniejszona o 1<br>10% szansy na zabranie o połowe mniej energii przy podróży";
                     document.getElementById("Msg").style.display = "block";
                     localStorage.jumpL = 5;
                     localStorage.jump5flag = true;
@@ -355,7 +642,7 @@
             }
         }
 
-        function InvReset(rmode)
+        function InvReset(rmode) // Finishes a couple of things after AddItem()
         {
                                 if(event.target.className == "name")
                                 {
@@ -367,18 +654,18 @@
                                             {
                                                 if(zbieranieRandom > 0.90)
                                                 {
-                                                    zulEnergy -= zbieranieEnergy / 2;
+                                                    zulEnergy -= GetzbieranieEnergy() / 2;
                                                     ZbieranieLevel();
                                                 }
                                                 else
                                                 {
-                                                    zulEnergy -= zbieranieEnergy;
+                                                    zulEnergy -= GetzbieranieEnergy();
                                                     ZbieranieLevel();
                                                 }
                                             }
                                             else
                                             {
-                                                zulEnergy -= zbieranieEnergy;
+                                                zulEnergy -= GetzbieranieEnergy();
                                                     ZbieranieLevel();
                                             }
                                             
@@ -396,18 +683,18 @@
                                                 if(zbieranieRandom > 0.90)
                                                 {
 
-                                                    zulEnergy -= zbieranieEnergy / 2;
+                                                    zulEnergy -= GetzbieranieEnergy() / 2;
                                                     ZbieranieLevel();
                                                 }
                                                 else
                                                 {
-                                                    zulEnergy -= zbieranieEnergy;
+                                                    zulEnergy -= GetzbieranieEnergy();
                                                     ZbieranieLevel();
                                                 }
                                             }
                                             else
                                             {
-                                                zulEnergy -= zbieranieEnergy;
+                                                zulEnergy -= GetzbieranieEnergy();
                                                     ZbieranieLevel();
                                             }
                                     }
@@ -423,18 +710,18 @@
                                             {
                                                 if(zbieranieRandom > 0.90)
                                                 {
-                                                    zulEnergy -= zbieranieEnergy / 2;
+                                                    zulEnergy -= GetzbieranieEnergy() / 2;
                                                     ZbieranieLevel();
                                                 }
                                                 else
                                                 {
-                                                    zulEnergy -= zbieranieEnergy;
+                                                    zulEnergy -= GetzbieranieEnergy();
                                                     ZbieranieLevel();
                                                 }
                                             }
                                             else
                                             {
-                                                zulEnergy -= zbieranieEnergy;
+                                                zulEnergy -= GetzbieranieEnergy();
                                                     ZbieranieLevel();
                                             }
                                     }
@@ -452,10 +739,10 @@
                                 zulInventoryToggle();
         }
         function AddItem(item,resetmode) {
-            if(zulEnergy >= zbieranieEnergy)
+            if(zulEnergy >= GetzbieranieEnergy())
             {
                 let clone = JSON.parse(JSON.stringify(itemlist[item - 1]));
-                if(zulInv.filter((inv) => {return inv.id == clone.id})[0] != undefined)
+                if(zulInv.filter((inv) => {return inv.id == clone.id})[0] != undefined && clone.equipable != true)
                 {
                     
                     for(i = 0; i < zulInv.length; i++)
@@ -521,64 +808,271 @@
             let amount = Math.floor(Math.random() * (max - min + 1) + min);
             let itemid;
             let loothtml = '<div class="loot"> ';
-            for(i = 0; i < amount; i++)
+            let weights = 0;
+            let lootlist_ = [];
+            
+            for(i = 0; i < lootlist.length; i++)
             {
-
-                itemid = Math.floor(Math.random() * lootlist.length);
-                loothtml += `<div class="lootitem"  style="border-right:${itemlist[lootlist[itemid] - 1].rarity} 1px solid" onclick="AddItem(${lootlist[itemid]})"><img  src="img/${itemlist[lootlist[itemid] - 1].img}" /><span class="name">${itemlist[lootlist[itemid] - 1].name}</span></div>`;
-                if(amount - i == 1)
-                {
-                    loothtml += `<div class="close" onclick="closeloot('${coords}')">X</div></div>`;
-                    return loothtml;
-                }
-                
+                weights += lootlist[i].amount;
             }
+            for(k = 0; k < amount; k++)
+            {
+                let weightrand = Math.random() * weights + 1;
+                let wrandsubtr;
+                
+                for(j = 0; j < lootlist.length; j++)
+                {
+
+                    weightrand -= lootlist[j].amount;
+                    if(weightrand - lootlist[j].amount <= 0)
+                    {
+                        console.log(lootlist[j], itemlist[lootlist[j].item]);
+                        lootlist_.push(lootlist[j].item);
+                        loothtml += `<div class="lootitem"  style="border-right:${itemlist[lootlist[j].item - 1].rarity} 1px solid" onclick="AddItem(${lootlist[j].item})"><img  src="img/${itemlist[lootlist[j].item - 1].img}" /><span class="name">${itemlist[lootlist[j].item - 1].name}</span></div>`; 
+                        break;
+                    }
+
+                }
+
+            }
+
+            
+            loothtml += `<div class="close" onclick="closeloot('${coords}')">X</div></div>`;
+            return loothtml;
         }
                         function BasicGen(coord)
                         {
-                            return GenerateLoot(                                    3,5,[1,1,1,1,1,1,1,1,
-                                                                                        2,2,2,2,2,2,
-                                                                                        3,3,3,3,3,3,
-                                                                                        4,4,4,4,4,4,
-                                                                                        5,5,5,5,5,5,
-                                                                                        6,6],
+                            return GenerateLoot(                                    3,5,[{item:1, amount:40,},
+                                                                                        {item:2, amount:35,},
+                                                                                        {item:3, amount:35,},
+                                                                                        {item:4, amount:32,},
+                                                                                        {item:5, amount:32,},
+                                                                                        {item:6, amount:10,},
+                                                                                        {item:7, amount:3,},
+                                                                                        {item:8, amount:35,},
+                                                                                        {item:9, amount:3},
+                                                                                        {item:10, amount:2} ],
                                                                                         coord);
                         }
+                        function SmietnikSpec1(coord) //5,1
+                        {
+                            return GenerateLoot(                                         10,10,[{item:1, amount:40,},
+                                                                                        {item:2, amount:35,},
+                                                                                        {item:3, amount:35,},
+                                                                                        {item:4, amount:32,},
+                                                                                        {item:5, amount:32,},
+                                                                                        {item:6, amount:20,},
+                                                                                        {item:7, amount:6,},
+                                                                                        {item:8, amount:4,},
+                                                                                        {item:9, amount:6} ],
+                                                                                        coord);
+                        }
+        function MapHTML(fields) 
+        {
+            // document.getElementById("map").innerHTML = `<div class="laweczka" style=" left:5vw;                 top:15vh">Ławeczka</div>      <div class="${fields[0][0]}" style="left:20vw; top:30vh;" onclick="Jump(1,1)" id="1,1">${BasicGen("1,1")}</div><div class="${fields[1][0]}" style="left:40vw; top:30vh;" onclick="Jump(2,1)" id="2,1">${BasicGen("2,1")}</div><div class="${fields[2][0]}" style="left:60vw; top:30vh;" onclick="Jump(3,1)" id="3,1">${BasicGen("3,1")}</div><div class="${fields[3][0]}" style="left:20vw; top:50vh;" onclick="Jump(1,2)" id="1,2">${BasicGen("1,2")}</div><div class="${fields[4][0]}" style="left:40vw; top:50vh;" onclick="Jump(2,2)" id="2,2">${BasicGen("2,2")}</div><div class="${fields[5][0]}" style="left:60vw; top:50vh;" onclick="Jump(3,2)" id="3,2">${BasicGen("3,2")}</div><div class="${fields[6][0]}" style="left:20vw; top:70vh;" onclick="Jump(1,3)" id="1,3">${BasicGen("1,3")}</div><div class="${fields[7][0]}" style="left:40vw; top:70vh;" onclick="Jump(2,3)" id="2,3">${BasicGen("2,3")}</div> <div class="${fields[13][0]}" style="left:40vw; top:90vh;" onclick="Jump(2,4)" id="2,4">  </div> <div class="${fields[13][0]}" style="left:40vw; top:110vh;" onclick="Jump(2,5)" id="2,5">  </div> <div class="${fields[13][0]}" style="left:40vw; top:130vh;" onclick="Jump(2,6)" id="2,6">  </div> <div class="${fields[8][0]}" style="left:60vw; top:70vh;" onclick="Jump(3,3)" id="3,3">${BasicGen("3,3")}</div><div class="${fields[9][0]}" style="left:80vw; top:70vh;" onclick="Jump(4,3)" id="4,3"></div><div class="${fields[10][0]}" style="left:95vw; top:70vh;" onclick="Jump(5,3)" id="5,3"></div>    <div class="${fields[11][0]}" style="left:95vw; top:50vh;" onclick="Jump(5,2)" id="5,2"></div>  <div class="${fields[12][0]}" style="left:95vw; top:30vh;" onclick="Jump(5,1)" id="5,1">${fields[12][1]}</div>`;
+            
+            let map = '';
+
+            for(l = 0; l < fields.length; l++)
+            {
+                map += `<div class="${fields[l].class}" style="left:${fields[l].posX * 20}vw; top:${fields[l].posY  * 20}vh" ${/* fields[l].class == "laweczka" ? "" : */ "onclick='" + "Jump(" + fields[l].posX  + "," + fields[l].posY + ")'"} id="${fields[l].posX + ',' + fields[l].posY}"> ${(fields[l].class == "laweczka") ? "Ławeczka" : (fields[l].class == "smietnik" || "") && GenerateLoot(fields[l].lootmin,fields[l].lootmax,fields[l].itemlist,fields[l].posX+","+fields[l].posY)} </div>`;
+            }
+            
+            
+            document.getElementById("map").innerHTML = map;
+        }
         function MapGenerate(name)
         {
             switch(name)
             {
                 case "first":
                 document.getElementById("map").style.opacity = 0;
+
                 
+                if(SleepX == undefined && SleepY == undefined)
+                {
+                    SleepX = 1;
+                    SleepY = 1;
+                }
+                zulX = SleepX;
+                zulY = SleepY;
+
+                
+
                 setTimeout(() => {
-                    zulEnergy = zulEnergyRefill;
+                    zulEnergy = GetZulEnergyRefill();
                     document.getElementById('zulEnergy').innerHTML = zulEnergy;
-                    zulX = 0;
-                    zulY = 0;
+                
+
+
+                    // Wpierdolić tutaj generacje mapy kurwa mac
+
+                    let BasicSmietnik1 = {class: "smietnik", lootmin: 3, lootmax: 5, itemlist: [
+                    {item:1, amount:40,},
+                    {item:2, amount:20,},
+                    {item:3, amount:20,},
+                    {item:4, amount:20,},
+                    {item:5, amount:20,},
+                    {item:6, amount:15,},
+                    {item:7, amount:2,},
+                    {item:8, amount:1,},
+                    {item:9, amount:2},
+                    {item:10, amount:1},
+                    {item:11, amount:2},
+                    {item:12, amount:1},
+                    {item:13, amount:2},
+                    {item:14, amount:1},
+                    {item:15, amount:2},
+                    {item:16, amount:1},
+                    ]};
+                    let BasicSmietnik2 = {class: "smietnik", lootmin: 3, lootmax: 5, itemlist: [
+                    {item:1, amount:40,},
+                    {item:2, amount:20,},
+                    {item:3, amount:20,},
+                    {item:4, amount:20,},
+                    {item:5, amount:20,},
+                    {item:6, amount:15,},
+                    {item:7, amount:2,},
+                    {item:8, amount:1,},
+                    {item:9, amount:2},
+                    {item:10, amount:1},
+                    {item:11, amount:2},
+                    {item:12, amount:1},
+                    {item:13, amount:2},
+                    {item:14, amount:1},
+                    {item:15, amount:2},
+                    {item:16, amount:1},
+                    ]};
+
+                    let SpecSmietnik1 = {class: "smietnik", lootmin: 10, lootmax: 10, itemlist: [
+                    {item:1, amount:40,},
+                    {item:2, amount:20,},
+                    {item:3, amount:20,},
+                    {item:4, amount:20,},
+                    {item:5, amount:20,},
+                    {item:6, amount:15,},
+                    {item:7, amount:4,},
+                    {item:8, amount:3,},
+                    {item:9, amount:4},
+                    {item:10, amount:3},
+                    {item:11, amount:4},
+                    {item:12, amount:3},
+                    {item:13, amount:4},
+                    {item:14, amount:3},
+                    {item:15, amount:4},
+                    {item:16, amount:3},
+                    ]};
+                    let SpecSmietnik2 = {class: "smietnik", lootmin: 5, lootmax: 5, itemlist: [
+                    {item:1, amount:40,},
+                    {item:2, amount:30,},
+                    {item:3, amount:30,},
+                    {item:4, amount:30,},
+                    {item:5, amount:30,},
+                    {item:6, amount:23,},
+                    {item:7, amount:6,},
+                    {item:8, amount:4,},
+                    {item:9, amount:6},
+                    {item:10, amount:4},
+                    {item:11, amount:6},
+                    {item:12, amount:4},
+                    {item:13, amount:6},
+                    {item:14, amount:4},
+                    {item:15, amount:6},
+                    {item:16, amount:4},
+                    {item:17, amount:6},
+                    {item:18, amount:6},
+                    ]};
                     
-                    fields = [
-                    field1 = Math.floor((Math.random() * 3) + 1),
-                    field2 = Math.floor((Math.random() * 3) + 1),
-                    field3 = Math.floor((Math.random() * 3) + 1),
-                    field4 = Math.floor((Math.random() * 3) + 1),
-                    field5 = Math.floor((Math.random() * 3) + 1),
-                    field6 = Math.floor((Math.random() * 3) + 1),
-                    field7 = Math.floor((Math.random() * 3) + 1),
-                    field8 = Math.floor((Math.random() * 3) + 1),
-                    field9 = ["puste"],
-                    field10 = ["puste"],
-                    field11 = ["puste"],
-                    field12 = ["puste"],
-                    field13 = ["smietnik",GenerateLoot(7,7,[1,2,3],"5,1")]  // Specjalny śmietnik
-                    ]
-                    for(i = 0;i < fields.length; i++) {
-                        if(fields[i] == 1) { fields[i] = ["puste"]}
-                        if(fields[i] == 2) { fields[i] = ["puste"]}
-                        if(fields[i] == 3) { fields[i] = ["smietnik","a se puszki prasne"]}
-                    }
-                    
-                    document.getElementById("map").innerHTML = `<div class="laweczka" style=" left:5vw;                 top:15vh">Ławeczka</div>      <div class="${fields[0][0]}" style="left:20vw; top:30vh;" onclick="Jump(1,1)" id="1,1">${BasicGen("1,1")}</div><div class="${fields[1][0]}" style="left:40vw; top:30vh;" onclick="Jump(2,1)" id="2,1">${BasicGen("2,1")}</div><div class="${fields[2][0]}" style="left:60vw; top:30vh;" onclick="Jump(3,1)" id="3,1">${BasicGen("3,1")}</div><div class="${fields[3][0]}" style="left:20vw; top:50vh;" onclick="Jump(1,2)" id="1,2">${BasicGen("1,2")}</div><div class="${fields[4][0]}" style="left:40vw; top:50vh;" onclick="Jump(2,2)" id="2,2">${BasicGen("2,2")}</div><div class="${fields[5][0]}" style="left:60vw; top:50vh;" onclick="Jump(3,2)" id="3,2">${BasicGen("3,2")}</div><div class="${fields[6][0]}" style="left:20vw; top:70vh;" onclick="Jump(1,3)" id="1,3">${BasicGen("1,3")}</div><div class="${fields[7][0]}" style="left:40vw; top:70vh;" onclick="Jump(2,3)" id="2,3">${BasicGen("2,3")}</div><div class="${fields[8][0]}" style="left:60vw; top:70vh;" onclick="Jump(3,3)" id="3,3">${BasicGen("3,3")}</div><div class="${fields[9][0]}" style="left:80vw; top:70vh;" onclick="Jump(4,3)" id="4,3"></div><div class="${fields[10][0]}" style="left:95vw; top:70vh;" onclick="Jump(5,3)" id="5,3"></div>    <div class="${fields[11][0]}" style="left:95vw; top:50vh;" onclick="Jump(5,2)" id="5,2"></div>  <div class="${fields[12][0]}" style="left:95vw; top:30vh;" onclick="Jump(5,1)" id="5,1">${fields[12][1]}</div>`;
+                    MapHTML(
+                        [
+                            // pierwsza czesc mapy
+                        {class: "laweczka", posX:1, posY:1, coord: "1,1"},
+                        Math.random() > 0.7 ? {class: "smietnik", posX:2, posY:2, lootmin: 3, lootmax: 5, itemlist: BasicSmietnik1.itemlist} : {class: "puste", posX:2, posY:2},
+
+                        Math.random() > 0.7 ? {class: "smietnik", posX:3, posY:2, lootmin: 3, lootmax: 5, itemlist: BasicSmietnik1.itemlist} : {class: "puste", posX:3, posY:2},
+
+                        Math.random() > 0.7 ? {class: "smietnik", posX:4, posY:2, lootmin: 3, lootmax: 5, itemlist: BasicSmietnik1.itemlist} : {class: "puste", posX:4, posY:2},
+
+                        Math.random() > 0.7 ? {class: "smietnik", posX:2, posY:3, lootmin: 3, lootmax: 5, itemlist: BasicSmietnik1.itemlist} : {class: "puste", posX:2, posY:3},
+
+                        Math.random() > 0.7 ? {class: "smietnik", posX:3, posY:3, lootmin: 3, lootmax: 5, itemlist: BasicSmietnik1.itemlist} : {class: "puste", posX:3, posY:3},
+                        
+                        Math.random() > 0.7 ? {class: "smietnik", posX:4, posY:3, lootmin: 3, lootmax: 5, itemlist: BasicSmietnik1.itemlist} : {class: "puste", posX:4, posY:3},
+
+                        Math.random() > 0.7 ? {class: "smietnik", posX:2, posY:4, lootmin: 3, lootmax: 5, itemlist: BasicSmietnik1.itemlist} : {class: "puste", posX:2, posY:4},
+
+                        Math.random() > 0.7 ? {class: "smietnik", posX:3, posY:4, lootmin: 3, lootmax: 5, itemlist: BasicSmietnik1.itemlist} : {class: "puste", posX:3, posY:4},
+
+                        Math.random() > 0.7 ? {class: "smietnik", posX:4, posY:4, lootmin: 3, lootmax: 5, itemlist: BasicSmietnik1.itemlist} : {class: "puste", posX:4, posY:4},
+
+                        // przejscie na druga czesc mapy
+                        {class: "puste", posX:3, posY:5},
+                        {class: "puste", posX:3, posY:6},
+                        {class: "puste", posX:3, posY:7},
+                        {class: "puste", posX:3, posY:8},
+                        {class: "puste", posX:3, posY:9},
+                        {class: "puste", posX:4, posY:9},
+                        {class: "puste", posX:5, posY:9},
+                        {class: "puste", posX:6, posY:9},
+                        {class: "puste", posX:7, posY:9},
+                        {class: "puste", posX:8, posY:9},
+                        {class: "puste", posX:8, posY:10},
+                        {class: "puste", posX:8, posY:11},
+                        {class: "puste", posX:8, posY:12},
+                        {class: "puste", posX:8, posY:13},
+
+                        //druga czesc mapy
+                        Math.random() > 0.6 ? {class: "smietnik", posX:6, posY:14, lootmin: 3, lootmax: 5, itemlist: BasicSmietnik2.itemlist} : {class: "puste", posX:6, posY:14},
+                        Math.random() > 0.6 ? {class: "smietnik", posX:7, posY:14, lootmin: 3, lootmax: 5, itemlist: BasicSmietnik2.itemlist} : {class: "puste", posX:7, posY:14},
+                        Math.random() > 0.6 ? {class: "smietnik", posX:8, posY:14, lootmin: 3, lootmax: 5, itemlist: BasicSmietnik2.itemlist} : {class: "puste", posX:8, posY:14},
+                        Math.random() > 0.6 ? {class: "smietnik", posX:9, posY:14, lootmin: 3, lootmax: 5, itemlist: BasicSmietnik2.itemlist} : {class: "puste", posX:9, posY:14},
+                        Math.random() > 0.6 ? {class: "smietnik", posX:10, posY:14, lootmin: 3, lootmax: 5, itemlist: BasicSmietnik2.itemlist} : {class: "puste", posX:10, posY:14},
+                        {class: "laweczka", posX: 11, posY: 14},
+                        Math.random() > 0.6 ? {class: "smietnik", posX:6, posY:15, lootmin: 3, lootmax: 5, itemlist: BasicSmietnik2.itemlist} : {class: "puste", posX:6, posY:15},
+                        Math.random() > 0.6 ? {class: "smietnik", posX:7, posY:15, lootmin: 3, lootmax: 5, itemlist: BasicSmietnik2.itemlist} : {class: "puste", posX:7, posY:15},
+                        Math.random() > 0.6 ? {class: "smietnik", posX:8, posY:15, lootmin: 3, lootmax: 5, itemlist: BasicSmietnik2.itemlist} : {class: "puste", posX:8, posY:15},
+                        Math.random() > 0.6 ? {class: "smietnik", posX:9, posY:15, lootmin: 3, lootmax: 5, itemlist: BasicSmietnik2.itemlist} : {class: "puste", posX:9, posY:15},
+                        Math.random() > 0.6 ? {class: "smietnik", posX:10, posY:15, lootmin: 3, lootmax: 5, itemlist: BasicSmietnik2.itemlist} : {class: "puste", posX:10, posY:15},
+                        Math.random() > 0.6 ? {class: "smietnik", posX:6, posY:16, lootmin: 3, lootmax: 5, itemlist: BasicSmietnik2.itemlist} : {class: "puste", posX:6, posY:16},
+                        Math.random() > 0.6 ? {class: "smietnik", posX:7, posY:16, lootmin: 3, lootmax: 5, itemlist: BasicSmietnik2.itemlist} : {class: "puste", posX:7, posY:16},
+                        Math.random() > 0.6 ? {class: "smietnik", posX:8, posY:16, lootmin: 3, lootmax: 5, itemlist: BasicSmietnik2.itemlist} : {class: "puste", posX:8, posY:16},
+                        Math.random() > 0.6 ? {class: "smietnik", posX:9, posY:16, lootmin: 3, lootmax: 5, itemlist: BasicSmietnik2.itemlist} : {class: "puste", posX:9, posY:16},
+                        Math.random() > 0.6 ? {class: "smietnik", posX:10, posY:16, lootmin: 3, lootmax: 5, itemlist: BasicSmietnik2.itemlist} : {class: "puste", posX:10, posY:16},
+                        
+                        {class: "puste", posX:5, posY:15},
+                        {class: "puste", posX:4, posY:15},
+                        {class: "puste", posX:3, posY:15},
+                        {class: "smietnik", posX:2, posY:15, lootmin: 5, lootmax: 5, itemlist: SpecSmietnik2.itemlist},
+
+                        {class: "puste", posX:6, posY:17},
+                        {class: "puste", posX:5, posY:17},
+                        {class: "puste", posX:4, posY:17},
+                        {class: "puste", posX:3, posY:17},
+                        {class: "smietnik", posX:2, posY:17, lootmin: 5, lootmax: 5, itemlist: SpecSmietnik2.itemlist},
+
+                        {class: "puste", posX:11, posY:16},
+                        {class: "puste", posX:12, posY:16},
+                        {class: "puste", posX:13, posY:16},
+                        {class: "smietnik", posX:14, posY:16, lootmin: 5, lootmax: 5, itemlist: SpecSmietnik2.itemlist},
+
+                        {class: "puste", posX:10, posY:17},
+                        {class: "puste", posX:10, posY:18},
+                        {class: "puste", posX:11, posY:18},
+                        {class: "puste", posX:12, posY:18},
+                        {class: "smietnik", posX:13, posY:18, lootmin: 10, lootmax: 10, itemlist: SpecSmietnik1.itemlist},
+
+                        //spejcalny smietnik na pierwszej czesci mapy
+                        {class: "puste", posX:5, posY:4},
+                        {class: "puste", posX:6, posY:4},
+                        {class: "puste", posX:6, posY:3},
+                        {class: "smietnik", posX:6, posY:2, lootmin: 10, lootmax: 10, itemlist: SpecSmietnik1.itemlist},
+
+
+                        //{class: "zlom", posX:4, posY:5},
+                        ]);
+
+                    document.getElementById("map").scrollTop = document.getElementById(`${zulX},${zulY}`).offsetTop - window.innerHeight * 0.5;
+                    document.getElementById("map").scrollLeft = document.getElementById(`${zulX},${zulY}`).offsetLeft - window.innerWidth * 0.5;
 
                     document.getElementById("map").style.opacity = 1;
                 },1000);
@@ -586,18 +1080,26 @@
                 break;
             }
         }
+        
+
         function Jump(x,y,exp)
         {
             if(x - zulX >= -1 && x - zulX <= 1)
             {
                 if(y - zulY >= -1 && y - zulY <= 1)
                 {
-                    if(zulEnergy >= jumpEnergy)
-                    {
-
-                        
-                        if(document.getElementById(`${zulX},${zulY}`))
+                    if(event.target.className == "laweczka")
                         {
+                            SleepX = x;
+                            SleepY = y;
+                        }
+                    else if(zulEnergy >= GetjumpEnergy())
+                    {
+                        //3vw      20vw/vh
+
+                        if(document.getElementById(`${zulX},${zulY}`) && document.getElementById(`${zulX},${zulY}`).className != "laweczka")
+                        {
+                            
 
                             document.getElementById(`${zulX},${zulY}`).style.backgroundColor=prevNode;
                             document.getElementById(`${zulX},${zulY}`).style.outline = "solid 1px yellow";
@@ -609,7 +1111,7 @@
                                     {
                                         document.getElementById(`${zulX},${zulY}`).getElementsByClassName("loot")[0].style.display = "none";
                                     }
-                                    if(event.target.className == "smietnik" || event.target.className == "puste")
+                                    if(event.target.className == "smietnik" || event.target.className == "puste" || event.target.className == "zlom")
                                     {
                                         document.getElementById(`${zulX},${zulY}`).getElementsByClassName("loot")[0].style.display = "none";
                                     }
@@ -623,11 +1125,11 @@
                             {
                                 if(jumpL >= 5 && Math.random() > 0.90)
                                 {
-                                    zulEnergy -= jumpEnergy / 2;
+                                    zulEnergy -= GetjumpEnergy() / 2;
                                 }
                                 else
                                 {
-                                    zulEnergy -= jumpEnergy;
+                                    zulEnergy -= GetjumpEnergy();
                                 }
                                 if(!exp)
                                 {
@@ -641,8 +1143,10 @@
                         zulX = x;
                         zulY = y;
 
-                                
-                            
+                            document.getElementById("map").scrollTop = document.getElementById(`${zulX},${zulY}`).offsetTop - window.innerHeight * 0.5;
+                            document.getElementById("map").scrollLeft = document.getElementById(`${zulX},${zulY}`).offsetLeft - window.innerWidth * 0.5;
+                        
+                        
                         prevNode = document.getElementById(`${zulX},${zulY}`).style.backgroundColor;
                         document.getElementById(`${x},${y}`).style.backgroundColor="green";
                         document.getElementById(`${zulX},${zulY}`).style.width = "5vw";
@@ -654,6 +1158,7 @@
                                 document.getElementById(`${zulX},${zulY}`).getElementsByClassName("loot")[0].style.display = "block";
                             }
                         }
+                        
                     }
                 }
             }
@@ -663,14 +1168,30 @@
         {
             document.getElementById(id).getElementsByClassName("loot")[0].style.display = "none";
         }
-        function zulInventoryToggle() {
+        function zulInventoryToggle() { // Opens/Closes the Inventory and Generates it
+            zulInv = zulInv.filter((item) => { return item.amount > 0;});
             if(document.getElementById('zulInv').style.display == "none")
             {
+                // Equipped Items Generation
+                document.getElementById('zulInv').innerHTML += "<div id='zulEquipped'>"
+                
+                document.getElementById('zulEquipped').innerHTML += (zulEq.head.item.id || '') ? `<div class="zulEqItem" onclick="EquipItem(zulEq.head,0);">  <img class="zulEqImg" src="img/${zulEq.head.item.img}"/>  <div class="zulEqName">${zulEq.head.item.name}</div>          <div class="zulEqTooltip">${zulEq.head.item.tooltipText} </br> Energia po spaniu: ${zulEq.head.item.zulEnergyRefill} </br> Energia do zbierania: ${zulEq.head.item.zbieranieEnergy} </br> Energia do podróży: ${zulEq.head.item.jumpEnergy}</div> </div>`   :    '<div class="zulEqItem"> Głowa: <div class="zulEqNameNoItem" style="    "> Brak Przedmiotu </div>';
+
+                document.getElementById('zulEquipped').innerHTML += (zulEq.torso.item.id || '') ? `<div class="zulEqItem" onclick="EquipItem(zulEq.torso,0);">  <img class="zulEqImg" src="img/${zulEq.torso.item.img}"/>  <div class="zulEqName">${zulEq.torso.item.name}</div>          <div class="zulEqTooltip">${zulEq.torso.item.tooltipText} </br> Energia po spaniu: ${zulEq.torso.item.zulEnergyRefill} </br> Energia do zbierania: ${zulEq.torso.item.zbieranieEnergy} </br> Energia do podróży: ${zulEq.torso.item.jumpEnergy}</div> </div>`   :    '<div class="zulEqItem"> Ciało: <div class="zulEqNameNoItem" style="position: absolute; left:4vw; top:-1vh;"> Brak Przedmiotu </div>';
+
+                document.getElementById('zulEquipped').innerHTML += (zulEq.gloves.item.id || '') ? `<div class="zulEqItem" onclick="EquipItem(zulEq.gloves,0);">  <img class="zulEqImg" src="img/${zulEq.gloves.item.img}"/>  <div class="zulEqName">${zulEq.gloves.item.name}</div>          <div class="zulEqTooltip">${zulEq.gloves.item.tooltipText} </br> Energia po spaniu: ${zulEq.gloves.item.zulEnergyRefill} </br> Energia do zbierania: ${zulEq.gloves.item.zbieranieEnergy} </br> Energia do podróży: ${zulEq.gloves.item.jumpEnergy}</div> </div>`   :    '<div class="zulEqItem"> Dłonie: <div class="zulEqNameNoItem" style="position: absolute; left:4vw; top:-1vh;"> Brak Przedmiotu </div>';
+
+                document.getElementById('zulEquipped').innerHTML += (zulEq.legs.item.id || '') ? `<div class="zulEqItem" onclick="EquipItem(zulEq.gloves,0);">  <img class="zulEqImg" src="img/${zulEq.legs.item.img}"/>  <div class="zulEqName">${zulEq.legs.item.name}</div>          <div class="zulEqTooltip">${zulEq.legs.item.tooltipText} </br> Energia po spaniu: ${zulEq.legs.item.zulEnergyRefill} </br> Energia do zbierania: ${zulEq.legs.item.zbieranieEnergy} </br> Energia do podróży: ${zulEq.legs.item.jumpEnergy}</div> </div>`   :    '<div class="zulEqItem"> Nogi: <div class="zulEqNameNoItem" style="position: absolute; left:4vw; top:-1vh;"> Brak Przedmiotu </div>';
+
+                document.getElementById('zulEquipped').innerHTML += (zulEq.boots.item.id || '') ? `<div class="zulEqItem" onclick="EquipItem(zulEq.gloves,0);">  <img class="zulEqImg" src="img/${zulEq.boots.item.img}"/>  <div class="zulEqName">${zulEq.boots.item.name}</div>          <div class="zulEqTooltip">${zulEq.boots.item.tooltipText} </br> Energia po spaniu: ${zulEq.boots.item.zulEnergyRefill} </br> Energia do zbierania: ${zulEq.boots.item.zbieranieEnergy} </br> Energia do podróży: ${zulEq.boots.item.jumpEnergy}</div> </div>`   :    '<div class="zulEqItem"> Buty: <div class="zulEqNameNoItem" style="position: absolute; left:4vw; top:-1vh;"> Brak Przedmiotu </div>';
+
+                // General Items Generation
+                document.getElementById('zulInv').innerHTML += "<div id='zulItems'>";
                 for(i = 0; i < zulInv.length; i++)
                 {
                             let usable;
                             if(zulInv[i].amount <= 0)
-                            {    
+                            {  
 
                             }
                             else
@@ -678,13 +1199,17 @@
                                 if(zulInv[i].cb)
                                 {                        
                                     usable = "Usable";
-                                    document.getElementById('zulInv').innerHTML += `<div class="invItem${usable}" style='border-right:${zulInv[i].rarity} 5px solid'   onclick='${zulInv[i].cb}'><img  src="img/${zulInv[i].img}"/>     <div class="name" >${zulInv[i].name}</div><div class="value"  >Wartość: ${zulInv[i].value}</div>  <div class="amount"  >x${zulInv[i].amount}</div>  </div>`;
+                                    document.getElementById('zulItems').innerHTML += `<div class="invItem${usable}" style='border-right:${zulInv[i].rarity} 5px solid'   onclick='${zulInv[i].cb}'><img  src="img/${zulInv[i].img}"/>     <div class="name" >${zulInv[i].name}</div><div class="value"  >Wartość: ${zulInv[i].value}</div>  <div class="amount"  >x${zulInv[i].amount}</div>  </div>`;
                                 }
                                 else
                                 {
                                     usable = "Unusable";
-                                    document.getElementById('zulInv').innerHTML += `<div class="invItem${usable}" style='border-right:${zulInv[i].rarity} 5px solid' ><img  src="img/${zulInv[i].img}"/>     <div class="name">${zulInv[i].name}</div><div class="value">Wartość: ${zulInv[i].value}</div>  <div class="amount">x${zulInv[i].amount}</div>  </div>`;
+                                    document.getElementById('zulItems').innerHTML += `<div class="invItem${usable}" style='border-right:${zulInv[i].rarity} 5px solid' ><img  src="img/${zulInv[i].img}"/>     <div class="name">${zulInv[i].name}</div><div class="value">Wartość: ${zulInv[i].value}</div>  <div class="amount">x${zulInv[i].amount}</div>  </div>`;
                                 }
+                            }
+                            if(zulInv.length - i == 1)
+                            {
+                                document.getElementById('zulInv').innerHTML += "</div>";
                             }
                 }
                 document.getElementById('zulInv').style.display = "block";
@@ -757,22 +1282,63 @@
         function Save()
         {
             localStorage.zulInv = JSON.stringify(zulInv);
-            localStorage.itemlist = JSON.stringify(itemlist);
+            localStorage.zulEq = JSON.stringify(zulEq);
+
             localStorage.zbieranieExp = zbieranieExp;
             localStorage.zbieranieL = zbieranieL;
             localStorage.jumpExp = jumpExp;
             localStorage.jumpL = jumpL;
             localStorage.GeneralExp = GeneralExp;
             localStorage.GeneralL = GeneralL;
+            localStorage.SleepX = SleepX;
+            localStorage.SleepY = SleepY;
         }
         function Load() 
         {
             if(localStorage.zulInv != "" && localStorage.zulInv != "[]")
             {
                  zulInv = JSON.parse(localStorage.zulInv);
-                 itemlist = JSON.parse(localStorage.itemlist);
+                 for(i = 0; i < zulInv.length; i++)
+                 {
+                     // chujowo jest ten okutasialy inventory zrobiony, niech sie pierdoli, kiedys tego zjeba zmienie ale kurwa aktualizacja ma byc dzisiaj chuju zajebany pierdolnij sie w leb
+                     
+                     zulInv[i].name = itemlist[zulInv[i].id - 1].name;
+                     zulInv[i].value = itemlist[zulInv[i].id - 1].value;
+                     zulInv[i].img = itemlist[zulInv[i].id - 1].img;
+                     zulInv[i].rarity = itemlist[zulInv[i].id - 1].rarity;
+                     zulInv[i].exp = itemlist[zulInv[i].id - 1].exp;
+                     zulInv[i].cb = itemlist[zulInv[i].id - 1].cb;
+                     zulInv[i].tootlipText = itemlist[zulInv[i].id - 1].tootlipText;
+                     zulInv[i].zulEnergyRefill = itemlist[zulInv[i].id - 1].zulEnergyRefill;
+                     zulInv[i].jumpEnergy = itemlist[zulInv[i].id - 1].jumpEnergy;
+                     zulInv[i].zbieranieEnergy = itemlist[zulInv[i].id - 1].zbieranieEnergy;
+                     zulInv[i].equipable = itemlist[zulInv[i].id - 1].equipable;
+                 }
             }
-            
+            if(localStorage.zulEq != "" && localStorage.zulInv != "[]")
+            {
+                zulEq = JSON.parse(localStorage.zulEq);
+                for(i = 0; i < zulEq.length; i++)
+                {
+                     zulEq[i].name = itemlist[zulEq[i].id - 1].name;
+                     zulEq[i].value = itemlist[zulEq[i].id - 1].value;
+                     zulEq[i].img = itemlist[zulEq[i].id - 1].img;
+                     zulEq[i].rarity = itemlist[zulEq[i].id - 1].rarity;
+                     zulEq[i].exp = itemlist[zulEq[i].id - 1].exp;
+                     zulEq[i].cb = itemlist[zulEq[i].id - 1].cb;
+                     zulEq[i].tootlipText = itemlist[zulEq[i].id - 1].tootlipText;
+                     zulEq[i].zulEnergyRefill = itemlist[zulEq[i].id - 1].zulEnergyRefill;
+                     zulEq[i].jumpEnergy = itemlist[zulEq[i].id - 1].jumpEnergy;
+                     zulEq[i].zbieranieEnergy = itemlist[zulEq[i].id - 1].zbieranieEnergy;
+                     zulEq[i].equipable = itemlist[zulEq[i].id - 1].equipable;
+                }
+            }
+
+            if(localStorage.SleepX != undefined && localStorage.SleepY != undefined)
+            {
+                SleepX = localStorage.SleepX;
+                SleepY = localStorage.SleepY;
+            }
             if(localStorage.zbieranieExp != undefined)
             {
                 zbieranieExp = Number(localStorage.zbieranieExp);
@@ -801,13 +1367,15 @@
         }
         #map
         {
-            background-color:#111111;
+            background-color:#222222;
             position: absolute;
             width:100%;
             height:100%;
             top:0px;
             left:0vw;
             transition: opacity 1s;
+            overflow:hidden;
+            
         }
         #mapContainer
         {
@@ -821,6 +1389,13 @@
         #map .smietnik
         {
             background-color:red;
+            width:3vw;
+            height:3vw;
+            position:absolute;
+        }
+        #map .zlom
+        {
+            background-color:purple;
             width:3vw;
             height:3vw;
             position:absolute;
@@ -848,6 +1423,16 @@
             opacity:0.98;
             display:none;
             bottom:12vh;
+            overflow-y:scroll;
+            max-height:50vh;
+        }
+        .smietnik .loot::-webkit-scrollbar
+        {
+            background-color: #333333;
+        }
+        .smietnik .loot::-webkit-scrollbar-thumb
+        {
+            background-color: #444444;
         }
         .smietnik .loot .lootitem
         {
@@ -983,6 +1568,11 @@
             color:black;
             padding:2vw;
         }
+        .laweczka .loot
+        {
+            display:none;
+            visibility: hidden;
+        }
         #zulEnergy
         {
             position:absolute;
@@ -1000,7 +1590,7 @@
         {
             z-index:3;
             position:absolute;
-            bottom:0px;
+            bottom:4vh;
             right:0px;
             background-color:#333;
             padding:1vh;
@@ -1125,7 +1715,7 @@
         {
             z-index:3;
             position:absolute;
-            bottom:5vh;
+            bottom:10vh;
             width:8vw;
             right:0px;
             text-align:center;
@@ -1149,6 +1739,46 @@
             padding:5%;
             width:10%;
             cursor:pointer;
+        }
+        #zulItems
+        {
+            position:relative;
+            top:5vh;
+        }
+        #zulEquipped .zulEqItem
+        {
+            position:relative;
+            top:1vw;
+            height:7vw;
+        }
+        #zulEquipped .zulEqItem .zulEqNameNoItem
+        {
+            position: relative;
+            font-size: 2vw;
+            display:inline;
+        }
+        #zulEquipped .zulEqItem .zulEqName
+        {
+            position: absolute;
+            font-size: 2.5vw;
+            display:inline;
+            top:0.9vw;
+        }
+        #zulEquipped .zulEqItem .zulEqTooltip
+        {
+            background-color:#333;
+            opacity:0.90;
+            top:0px;
+            position:absolute;
+            visibility: hidden;
+        }
+        #zulEquipped .zulEqItem:hover .zulEqTooltip
+        {
+            visibility: visible;
+        }
+        #map::-webkit-scrollbar
+        {
+            
         }
     </style>
 </head>
