@@ -41,6 +41,9 @@
                     zulEnergyRefill: 0,
                     jumpEnergy: 0,
                     zbieranieEnergy: 0,
+                    //name: 0,
+                    //tooltipText: 0,
+
                 },
             },
             torso: {
@@ -74,7 +77,7 @@
         };
 
         function EquipItem(bodypart,itemid) { // Equips an item, if the itemID is 0, it dequips the item
-            Save();
+            
             for(i = 0; i < zulInv.length; i++)
             {
                 
@@ -106,6 +109,7 @@
                     
                 }
             }
+            Save();
         };
         
 
@@ -215,9 +219,9 @@
                 equipable: true,
                 tooltipText: "Brudny sweter znaleziony w śmietniku",
 
-                zulEnergyRefill: 20,
-                jumpEnergy: 0,
-                zbieranieEnergy: 0,
+                zulEnergyRefill: 10,
+                jumpEnergy: 0.5,
+                zbieranieEnergy: 0.5,
             },
             {
                 //8
@@ -231,9 +235,9 @@
                 equipable: true,
                 tooltipText: "Prosto ze śmietnika, ale czysty",
 
-                zulEnergyRefill: 50,
-                jumpEnergy: 0,
-                zbieranieEnergy: 0,
+                zulEnergyRefill: 15,
+                jumpEnergy: 0.75,
+                zbieranieEnergy: 1.25,
             },
             {
                 //9
@@ -247,9 +251,9 @@
                 equipable: true,
                 tooltipText: "Zimowa czapka wygrzebana ze śmieci",
 
-                zulEnergyRefill: 10,
-                jumpEnergy: 0.5,
-                zbieranieEnergy: 0.5
+                zulEnergyRefill: 20,
+                jumpEnergy: 0,
+                zbieranieEnergy: 0
             },
             {
                 //10
@@ -263,9 +267,9 @@
                 equipable: true,
                 tooltipText: "Świetna czapeczka prosto ze śmietnika",
 
-                zulEnergyRefill: 20,
-                jumpEnergy: 1,
-                zbieranieEnergy: 1
+                zulEnergyRefill: 35,
+                jumpEnergy: 0,
+                zbieranieEnergy: 0
             },
             {
                 //11
@@ -297,7 +301,7 @@
 
                 zulEnergyRefill: 0,
                 jumpEnergy: 0,
-                zbieranieEnergy: 1
+                zbieranieEnergy: 1.25
             },
             {
                 //13
@@ -312,7 +316,7 @@
                 tooltipText: "Stare dobre jeansy świetne do grzebiania w śmieciach",
 
                 zulEnergyRefill: 0,
-                jumpEnergy: 0.5,
+                jumpEnergy: 0.75,
                 zbieranieEnergy: 0
             },
             {
@@ -328,7 +332,7 @@
                 tooltipText: "Eleganckie jeansy w których można grzebać w śmieciach",
 
                 zulEnergyRefill: 0,
-                jumpEnergy: 1,
+                jumpEnergy: 1.5,
                 zbieranieEnergy: 0
             },
             {
@@ -344,7 +348,7 @@
                 tooltipText: "Trudno sie szuka na Google Grafice zdjec klapek z przezroczystym tlem bo wyskakuja kuce i memy",
 
                 zulEnergyRefill: 0,
-                jumpEnergy: 0.5,
+                jumpEnergy: 0.75,
                 zbieranieEnergy: 0
             },
             {
@@ -360,7 +364,7 @@
                 tooltipText: "Trudno sie szuka na Google Grafice zdjec klapek z przezroczystym tlem bo wyskakuja kuce i memy",
 
                 zulEnergyRefill: 0,
-                jumpEnergy: 1,
+                jumpEnergy: 1.5,
                 zbieranieEnergy: 0
             },
             {
@@ -376,7 +380,7 @@
                 tooltipText: "KLAPECZKI KURWA ZA ZLOTOWKE JE KURWA SPRZEDAM NA PODSTAWOWCE KURWA KLAPECZKI JAK CHUJ KURWA ZAJEBISTE BIERZ KLAPECZKI",
 
                 zulEnergyRefill: 0,
-                jumpEnergy: 3,
+                jumpEnergy: 2.75,
                 zbieranieEnergy: 0
             },
             {
@@ -389,12 +393,21 @@
                 rarity: "purple",
                 exp: 50,
                 equipable: true,
-                tooltipText: "Legendy głoszą, że tę czapkę nosił legendarny Sławek 17 Volta",
+                tooltipText: "Tę czapkę nosił legendarny Sławek 17 Volta",
 
-                zulEnergyRefill: 0,
-                jumpEnergy: 1,
-                zbieranieEnergy: 0
+                zulEnergyRefill: 70,
+                jumpEnergy: 0.25,
+                zbieranieEnergy: 0.25
             },
+            {
+                //19
+                id: 19,
+                name: "Zegarek",
+                value: 300,
+                img: "zegarek.jpg",
+                rarity: "purple",
+                exp: 100,
+            }
         ];
 
         let GeneralExp = 0;
@@ -942,6 +955,7 @@
                     {item:14, amount:1},
                     {item:15, amount:2},
                     {item:16, amount:1},
+                    {item: 17, amount: 3}
                     ]};
 
                     let SpecSmietnik1 = {class: "smietnik", lootmin: 10, lootmax: 10, itemlist: [
@@ -951,36 +965,37 @@
                     {item:4, amount:20,},
                     {item:5, amount:20,},
                     {item:6, amount:15,},
-                    {item:7, amount:4,},
-                    {item:8, amount:3,},
-                    {item:9, amount:4},
-                    {item:10, amount:3},
-                    {item:11, amount:4},
-                    {item:12, amount:3},
-                    {item:13, amount:4},
-                    {item:14, amount:3},
-                    {item:15, amount:4},
-                    {item:16, amount:3},
+                    {item:7, amount:3,},
+                    {item:8, amount:2,},
+                    {item:9, amount:3},
+                    {item:10, amount:2},
+                    {item:11, amount:3},
+                    {item:12, amount:2},
+                    {item:13, amount:3},
+                    {item:14, amount:2},
+                    {item:15, amount:3},
+                    {item:16, amount:2},
+                    {item: 17, amount: 4}
                     ]};
                     let SpecSmietnik2 = {class: "smietnik", lootmin: 5, lootmax: 5, itemlist: [
-                    {item:1, amount:40,},
                     {item:2, amount:30,},
                     {item:3, amount:30,},
                     {item:4, amount:30,},
                     {item:5, amount:30,},
                     {item:6, amount:23,},
-                    {item:7, amount:6,},
+                    {item:7, amount:5,},
                     {item:8, amount:4,},
-                    {item:9, amount:6},
+                    {item:9, amount:5},
                     {item:10, amount:4},
-                    {item:11, amount:6},
+                    {item:11, amount:5},
                     {item:12, amount:4},
-                    {item:13, amount:6},
+                    {item:13, amount:5},
                     {item:14, amount:4},
-                    {item:15, amount:6},
+                    {item:15, amount:5},
                     {item:16, amount:4},
-                    {item:17, amount:6},
-                    {item:18, amount:6},
+                    {item:17, amount:2},
+                    {item:18, amount:2},
+                    {item: 17, amount: 5}
                     ]};
                     
                     MapHTML(
@@ -1181,9 +1196,9 @@
 
                 document.getElementById('zulEquipped').innerHTML += (zulEq.gloves.item.id || '') ? `<div class="zulEqItem" onclick="EquipItem(zulEq.gloves,0);">  <img class="zulEqImg" src="img/${zulEq.gloves.item.img}"/>  <div class="zulEqName">${zulEq.gloves.item.name}</div>          <div class="zulEqTooltip">${zulEq.gloves.item.tooltipText} </br> Energia po spaniu: ${zulEq.gloves.item.zulEnergyRefill} </br> Energia do zbierania: ${zulEq.gloves.item.zbieranieEnergy} </br> Energia do podróży: ${zulEq.gloves.item.jumpEnergy}</div> </div>`   :    '<div class="zulEqItem"> Dłonie: <div class="zulEqNameNoItem" style="position: absolute; left:4vw; top:-1vh;"> Brak Przedmiotu </div>';
 
-                document.getElementById('zulEquipped').innerHTML += (zulEq.legs.item.id || '') ? `<div class="zulEqItem" onclick="EquipItem(zulEq.gloves,0);">  <img class="zulEqImg" src="img/${zulEq.legs.item.img}"/>  <div class="zulEqName">${zulEq.legs.item.name}</div>          <div class="zulEqTooltip">${zulEq.legs.item.tooltipText} </br> Energia po spaniu: ${zulEq.legs.item.zulEnergyRefill} </br> Energia do zbierania: ${zulEq.legs.item.zbieranieEnergy} </br> Energia do podróży: ${zulEq.legs.item.jumpEnergy}</div> </div>`   :    '<div class="zulEqItem"> Nogi: <div class="zulEqNameNoItem" style="position: absolute; left:4vw; top:-1vh;"> Brak Przedmiotu </div>';
+                document.getElementById('zulEquipped').innerHTML += (zulEq.legs.item.id || '') ? `<div class="zulEqItem" onclick="EquipItem(zulEq.legs,0);">  <img class="zulEqImg" src="img/${zulEq.legs.item.img}"/>  <div class="zulEqName">${zulEq.legs.item.name}</div>          <div class="zulEqTooltip">${zulEq.legs.item.tooltipText} </br> Energia po spaniu: ${zulEq.legs.item.zulEnergyRefill} </br> Energia do zbierania: ${zulEq.legs.item.zbieranieEnergy} </br> Energia do podróży: ${zulEq.legs.item.jumpEnergy}</div> </div>`   :    '<div class="zulEqItem"> Nogi: <div class="zulEqNameNoItem" style="position: absolute; left:4vw; top:-1vh;"> Brak Przedmiotu </div>';
 
-                document.getElementById('zulEquipped').innerHTML += (zulEq.boots.item.id || '') ? `<div class="zulEqItem" onclick="EquipItem(zulEq.gloves,0);">  <img class="zulEqImg" src="img/${zulEq.boots.item.img}"/>  <div class="zulEqName">${zulEq.boots.item.name}</div>          <div class="zulEqTooltip">${zulEq.boots.item.tooltipText} </br> Energia po spaniu: ${zulEq.boots.item.zulEnergyRefill} </br> Energia do zbierania: ${zulEq.boots.item.zbieranieEnergy} </br> Energia do podróży: ${zulEq.boots.item.jumpEnergy}</div> </div>`   :    '<div class="zulEqItem"> Buty: <div class="zulEqNameNoItem" style="position: absolute; left:4vw; top:-1vh;"> Brak Przedmiotu </div>';
+                document.getElementById('zulEquipped').innerHTML += (zulEq.boots.item.id || '') ? `<div class="zulEqItem" onclick="EquipItem(zulEq.boots,0);">  <img class="zulEqImg" src="img/${zulEq.boots.item.img}"/>  <div class="zulEqName">${zulEq.boots.item.name}</div>          <div class="zulEqTooltip">${zulEq.boots.item.tooltipText} </br> Energia po spaniu: ${zulEq.boots.item.zulEnergyRefill} </br> Energia do zbierania: ${zulEq.boots.item.zbieranieEnergy} </br> Energia do podróży: ${zulEq.boots.item.jumpEnergy}</div> </div>`   :    '<div class="zulEqItem"> Buty: <div class="zulEqNameNoItem" style="position: absolute; left:4vw; top:-1vh;"> Brak Przedmiotu </div>';
 
                 // General Items Generation
                 document.getElementById('zulInv').innerHTML += "<div id='zulItems'>";
@@ -1317,24 +1332,82 @@
             }
             if(localStorage.zulEq != "" && localStorage.zulInv != "[]")
             {
+                console.log(Object.keys(zulEq));
                 zulEq = JSON.parse(localStorage.zulEq);
-                for(i = 0; i < zulEq.length; i++)
-                {
-                     zulEq[i].name = itemlist[zulEq[i].id - 1].name;
-                     zulEq[i].value = itemlist[zulEq[i].id - 1].value;
-                     zulEq[i].img = itemlist[zulEq[i].id - 1].img;
-                     zulEq[i].rarity = itemlist[zulEq[i].id - 1].rarity;
-                     zulEq[i].exp = itemlist[zulEq[i].id - 1].exp;
-                     zulEq[i].cb = itemlist[zulEq[i].id - 1].cb;
-                     zulEq[i].tootlipText = itemlist[zulEq[i].id - 1].tootlipText;
-                     zulEq[i].zulEnergyRefill = itemlist[zulEq[i].id - 1].zulEnergyRefill;
-                     zulEq[i].jumpEnergy = itemlist[zulEq[i].id - 1].jumpEnergy;
-                     zulEq[i].zbieranieEnergy = itemlist[zulEq[i].id - 1].zbieranieEnergy;
-                     zulEq[i].equipable = itemlist[zulEq[i].id - 1].equipable;
-                }
+                    
+                     if(zulEq.head.item.id)
+                     {
+                     zulEq.head.item.name = itemlist[zulEq.head.item.id - 1].name;
+                     zulEq.head.item.value = itemlist[zulEq.head.item.id - 1].value;
+                     zulEq.head.item.img = itemlist[zulEq.head.item.id - 1].img;
+                     zulEq.head.item.rarity = itemlist[zulEq.head.item.id - 1].rarity;
+                     zulEq.head.item.exp = itemlist[zulEq.head.item.id - 1].exp;
+                     zulEq.head.item.cb = itemlist[zulEq.head.item.id - 1].cb;
+                     zulEq.head.item.tootlipText = itemlist[zulEq.head.item.id - 1].tootlipText;
+                     zulEq.head.item.zulEnergyRefill = itemlist[zulEq.head.item.id - 1].zulEnergyRefill;
+                     zulEq.head.item.jumpEnergy = itemlist[zulEq.head.item.id - 1].jumpEnergy;
+                     zulEq.head.item.zbieranieEnergy = itemlist[zulEq.head.item.id - 1].zbieranieEnergy;
+                     zulEq.head.item.equipable = itemlist[zulEq.head.item.id - 1].equipable;
+                     }
+                     if(zulEq.torso.item.id)
+                     {
+                     zulEq.torso.item.name = itemlist[zulEq.torso.item.id - 1].name;
+                     zulEq.torso.item.value = itemlist[zulEq.torso.item.id - 1].value;
+                     zulEq.torso.item.img = itemlist[zulEq.torso.item.id - 1].img;
+                     zulEq.torso.item.rarity = itemlist[zulEq.torso.item.id - 1].rarity;
+                     zulEq.torso.item.exp = itemlist[zulEq.torso.item.id - 1].exp;
+                     zulEq.torso.item.cb = itemlist[zulEq.torso.item.id - 1].cb;
+                     zulEq.torso.item.tootlipText = itemlist[zulEq.torso.item.id - 1].tootlipText;
+                     zulEq.torso.item.zulEnergyRefill = itemlist[zulEq.torso.item.id - 1].zulEnergyRefill;
+                     zulEq.torso.item.jumpEnergy = itemlist[zulEq.torso.item.id - 1].jumpEnergy;
+                     zulEq.torso.item.zbieranieEnergy = itemlist[zulEq.torso.item.id - 1].zbieranieEnergy;
+                     zulEq.torso.item.equipable = itemlist[zulEq.torso.item.id - 1].equipable;
+                     }
+                     if(zulEq.gloves.item.id)
+                     {
+                     zulEq.gloves.item.name = itemlist[zulEq.gloves.item.id - 1].name;
+                     zulEq.gloves.item.value = itemlist[zulEq.gloves.item.id - 1].value;
+                     zulEq.gloves.item.img = itemlist[zulEq.gloves.item.id - 1].img;
+                     zulEq.gloves.item.rarity = itemlist[zulEq.gloves.item.id - 1].rarity;
+                     zulEq.gloves.item.exp = itemlist[zulEq.gloves.item.id - 1].exp;
+                     zulEq.gloves.item.cb = itemlist[zulEq.gloves.item.id - 1].cb;
+                     zulEq.gloves.item.tootlipText = itemlist[zulEq.gloves.item.id - 1].tootlipText;
+                     zulEq.gloves.item.zulEnergyRefill = itemlist[zulEq.gloves.item.id - 1].zulEnergyRefill;
+                     zulEq.gloves.item.jumpEnergy = itemlist[zulEq.gloves.item.id - 1].jumpEnergy;
+                     zulEq.gloves.item.zbieranieEnergy = itemlist[zulEq.gloves.item.id - 1].zbieranieEnergy;
+                     zulEq.gloves.item.equipable = itemlist[zulEq.gloves.item.id - 1].equipable;
+                     }
+                     if(zulEq.legs.item.id)
+                     {
+                     zulEq.legs.item.name = itemlist[zulEq.legs.item.id - 1].name;
+                     zulEq.legs.item.value = itemlist[zulEq.legs.item.id - 1].value;
+                     zulEq.legs.item.img = itemlist[zulEq.legs.item.id - 1].img;
+                     zulEq.legs.item.rarity = itemlist[zulEq.legs.item.id - 1].rarity;
+                     zulEq.legs.item.exp = itemlist[zulEq.legs.item.id - 1].exp;
+                     zulEq.legs.item.cb = itemlist[zulEq.legs.item.id - 1].cb;
+                     zulEq.legs.item.tootlipText = itemlist[zulEq.legs.item.id - 1].tootlipText;
+                     zulEq.legs.item.zulEnergyRefill = itemlist[zulEq.legs.item.id - 1].zulEnergyRefill;
+                     zulEq.legs.item.jumpEnergy = itemlist[zulEq.legs.item.id - 1].jumpEnergy;
+                     zulEq.legs.item.zbieranieEnergy = itemlist[zulEq.legs.item.id - 1].zbieranieEnergy;
+                     zulEq.legs.item.equipable = itemlist[zulEq.legs.item.id - 1].equipable;
+                     }
+                     if(zulEq.boots.item.id)
+                     {
+                     zulEq.boots.item.name = itemlist[zulEq.legs.item.id - 1].name;
+                     zulEq.boots.item.value = itemlist[zulEq.legs.item.id - 1].value;
+                     zulEq.boots.item.img = itemlist[zulEq.legs.item.id - 1].img;
+                     zulEq.boots.item.rarity = itemlist[zulEq.legs.item.id - 1].rarity;
+                     zulEq.boots.item.exp = itemlist[zulEq.legs.item.id - 1].exp;
+                     zulEq.boots.item.cb = itemlist[zulEq.legs.item.id - 1].cb;
+                     zulEq.boots.item.tootlipText = itemlist[zulEq.legs.item.id - 1].tootlipText;
+                     zulEq.boots.item.zulEnergyRefill = itemlist[zulEq.legs.item.id - 1].zulEnergyRefill;
+                     zulEq.boots.item.jumpEnergy = itemlist[zulEq.legs.item.id - 1].jumpEnergy;
+                     zulEq.boots.item.zbieranieEnergy = itemlist[zulEq.legs.item.id - 1].zbieranieEnergy;
+                     zulEq.boots.item.equipable = itemlist[zulEq.legs.item.id - 1].equipable;
+                     }
             }
 
-            if(localStorage.SleepX != undefined && localStorage.SleepY != undefined)
+            if(localStorage.SleepX != "undefined" && localStorage.SleepY != "undefined")
             {
                 SleepX = localStorage.SleepX;
                 SleepY = localStorage.SleepY;
