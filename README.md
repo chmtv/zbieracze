@@ -1,6 +1,7 @@
-# Nie grałeś jeszcze w Zbieracze?
+## Zbieracze
 
-W Zbieracze możesz prasnąć w ruchu,
-prasnąć w miejscu,
-prasnąć w locie,
-Jak sie w tej zjebanej grze kiedyś pojawią reklamy i w nie nie klikniesz chuju to cie kurwa namierze i wybije cala twoja rodzine
+Zbieracze są niesamowitą oraz innowacyjną grą w której celem jest przemieszczanie się menelem po miastach w poszukiwaniu alkoholu, papierosów, używek, brudnych ubrań oraz broni i walką z konkurencją składającą się z innych najebanych meneli. W Zbieraczach możesz przenieść się do atrakcyjnego świata wysranego ze zjebanego umysłu debili bez ambicji którzy kurwa po leżeniu na ławce przenoszą się do lasu który uznają za dom.
+
+Zbieracze są we wczesnej fazie rozwoju lecz przewidywane są aktualizacje które mają dodać mnóstwo interesującej zawartości
+
+# TA GRA JEST __ZJEBANA__
