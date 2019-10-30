@@ -1,5 +1,9 @@
-## Zbieracze 
-
-Zbieracze są wciągającą oraz innowacyjną grą w której celem jest przemieszczanie się kurwa **śmierdzącym żulem** po lokalnych **śmietnikach** w poszukiwaniu __alkoholu, papierosów, używek, brudnych ubrań oraz broni__ i walką z innymi zjebanymi żulami których twoja zjebana postać nazywa konkurencją! W Zbieraczach możesz przenieść się do atrakcyjnego świata wysranego ze zjebanego umysłu debili bez ambicji którzy kurwa po ciężkim dniu grzebania w śmieciach przenoszą się do lasu który uznają za dom.
-
-#### Ta gra jest kurwa chujowa i zjebana, nie wiem czemu ja ją kurwa zrobiłem co mnie do chuja jasnego opętało pora iść do psychologa który i tak nie pomoże bo jest aż tak źle
+# Co to są zbieracze?
+Bo może niektóre osoby nie wiedzą...?
+A więc właśnie wychodzimy na przekur naszym graczom.
+Zbieracze-the game to gra polegająca na taktycznym zbieraniu i umiejętnym podrużowaniu.
+Gra uczy i bawi.
+Nasz produkt jest darmowy, można w niego zagrać np. Wchodząc z linku na oficialnym yt.
+Jesteśmy poważną firmą. Nie opraskowujemy swoich klientów. W naszą grają osoby z całego świata(Usa i Indie). Sponsorują nas takie marki jak( właściwie to nikt nas nie sponsoruje ale jakby ktoś chciał zbieraczeofficial@gmail.com)
+Gra dalej się rozwija. Nasz potężny twórca chce popełnić samobójstwo ale ty nie musisz (bo z czego ja będę brał hajs). 
+A więc odpalaj przeglądarkę(google chrom) i zacznij grać już teraz!!!
