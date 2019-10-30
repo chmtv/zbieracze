@@ -1,4 +1,4 @@
-## Zbieracze
+## Zbieracze andrzej fuga to sie duda 
 
 Zbieracze są wciągającą oraz innowacyjną grą w której celem jest przemieszczanie się kurwa **śmierdzącym żulem** po lokalnych **śmietnikach** w poszukiwaniu __alkoholu, papierosów, używek, brudnych ubrań oraz broni__ i walką z innymi zjebanymi żulami których twoja zjebana postać nazywa konkurencją! W Zbieraczach możesz przenieść się do atrakcyjnego świata wysranego ze zjebanego umysłu debili bez ambicji którzy kurwa po ciężkim dniu grzebania w śmieciach przenoszą się do lasu który uznają za dom.
 
