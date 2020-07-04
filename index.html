@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zbieracze</title>
+    <style>
+        @font-face {
+        font-family: 'LiberationSans';
+         src: url('LiberationSans.ttf') format('truetype');
+}
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #111;
+            font-family: "LiberationSans";
+            color: #aaa;
+        }
+        #background {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+
+            background-size: cover;
+            background-image: url(background.png);
+        }
+        header {
+            opacity: 90%;
+        }
+        #TitleText {
+            font-size: 10vh;
+            text-align: center;
+            color:#c98300;
+        }
+        #infoPanelContainer {
+            display: flex;
+            height:80%;
+            justify-content: center;
+            flex-grow: 1;
+            align-items: flex-start;
+            flex-direction: column;
+        }
+        .infoPanel {
+            cursor:default;
+            margin-top: 5vh;
+            height:20vh;
+            text-align: center;
+            display:flex;
+            align-items: center;
+            background-color: #333;
+            opacity: 90%;
+            transition: 0.5s;
+        }
+        .infoPanel header {
+            width:20vw;
+            height: 100%;
+            display:flex;
+            justify-items: center;
+            align-items: center;
+            text-align: center;
+            background-size: cover;
+        }
+        .infoPanel header b {
+            width: 100%;
+            font-size: 3vw;
+        }
+        .infoPanel .infoContent {
+            width:0;
+            font-size: 2vw;
+            overflow-x:hidden;
+            display: inline-block;
+            transition:0.5s;
+            white-space: nowrap;
+        }
+        a {
+            cursor:pointer;
+            text-decoration: none;
+            height:5vh;
+            width:20vw;
+            color: #aaa;
+            font-size: 4vh;
+            background-color: #333;
+            transition: 0.5s;
+        }
+        .linkContainer {
+            cursor:pointer;
+            text-decoration: none;
+            height:5vh;
+            width:100%;
+            display:flex;
+            align-items: flex-end;
+            justify-items: flex-end;
+            text-align: center;
+            color: #aaa;
+            font-size: 4vh;
+            transition: 0.5s;
+        }
+    </style>
+    <script>
+        // Background parallax effect
+        document.addEventListener("mousemove", parallax);
+        
+        function parallax(e) {
+            let backgroundEl = document.getElementById("background");
+            backgroundEl.style.backgroundPosition = (e.clientX / 50).toString() + "px " + (e.clientY / 50).toString() + "px";
+        }
+
+
+
+        // Sliding info panels scripts
+        function slideOut(el) {
+            el.getElementsByClassName("infoContent")[0].style.width = "70vw";
+            el.style.backgroundColor = "#555";
+        }
+        function slideIn(el) {
+            el.getElementsByClassName("infoContent")[0].style.width = "0";
+            el.style.backgroundColor = "#333";
+        }
+    </script>
+</head>
+<body>
+    <div id="background">
+        <header> 
+            <div id="TitleText">Zbieracze </div>
+        </header>
+
+        <main id="infoPanelContainer">
+            <section class="infoPanel" onmouseover="slideOut(this)" onmouseout="slideIn(this)">
+                <header > <b>Zbieraj <br> zlom</b> </header>
+                <main class="infoContent">
+                    Przeszukuj smietniki, niszcz miasto lub zabieraj przeciwnikom zlom <br>zeby zdobyc pieniadze.
+                </main>
+            </section>
+
+            <section class="infoPanel" style="align-self: flex-end;" onmouseover="slideOut(this)" onmouseout="slideIn(this)">
+                <header > <b>Walcz <br> z konkurencja</b> </header>
+                <main class="infoContent">
+                    Walcz z wrogami i zdobywaj metalowe lupy. <br>Ulepszaj swoja postac by stac sie silniejszym.
+                </main>
+            </section>
+
+            <section class="infoPanel" onmouseover="slideOut(this)" onmouseout="slideIn(this)">
+                <header > <b>Eksploruj <br> swiat</b> </header>
+                <main class="infoContent">
+                    Zwiedzaj osiedla <br>szukaj nowych sposobow na pozyskanie trunku.
+                </main>
+            </section>
+
+            
+        </main>
+        <div class="linkContainer"><a href="Zbieracze.rar"> Pobierz </a></div>
+    </div>
+    
+</body>
+</html>
