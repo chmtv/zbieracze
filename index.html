@@ -75,6 +75,7 @@
         a {
             cursor:pointer;
             text-decoration: none;
+            display:inline-block;
             height:5vh;
             width:20vw;
             color: #aaa;
@@ -85,15 +86,21 @@
         .linkContainer {
             cursor:pointer;
             text-decoration: none;
-            height:5vh;
-            width:100%;
-            display:flex;
-            align-items: flex-end;
-            justify-items: flex-end;
+            height: 10vh;
             text-align: center;
+            width:20vw;
+            display: flex;
+            align-items: center;
+            margin-left: 20vw;
             color: #aaa;
+            background-color: #333;
             font-size: 4vh;
             transition: 0.5s;
+        }
+        #linkButtons {
+            display:flex;
+            justify-items: center;
+            align-items: center;
         }
     </style>
     <script>
@@ -148,7 +155,10 @@
 
             
         </main>
-        <div class="linkContainer"><a href="Zbieracze.rar"> Pobierz </a></div>
+        <div id="linkButtons">
+            <div class="linkContainer"><a href="Zbieracze.rar"> Pobierz </a></div>
+            <div class="linkContainer" style="align-items: flex-start;"><a href="/zbieracze.html"> Oryginalni <br> Zbieracze </a></div>
+        </div>
     </div>
     
 </body>
