@@ -79,8 +79,8 @@
             height:5vh;
             width:20vw;
             color: #aaa;
-            font-size: 4vh;
             background-color: #333;
+            font-size: 3vh;
             transition: 0.5s;
         }
         .linkContainer {
@@ -94,7 +94,6 @@
             margin-left: 20vw;
             color: #aaa;
             background-color: #333;
-            font-size: 4vh;
             transition: 0.5s;
         }
         #linkButtons {
@@ -102,16 +101,25 @@
             justify-items: center;
             align-items: center;
         }
+        @media (orientation: portrait) {
+            a {
+                font-size:3vw;
+            }
+        }
     </style>
     <script>
         // Background parallax effect
-        document.addEventListener("mousemove", parallax);
+        document.addEventListener("mousemove", parallaxMouse);
+        document.addEventListener("touchmove", parallaxTouch);
         
-        function parallax(e) {
+        function parallaxMouse(e) {
             let backgroundEl = document.getElementById("background");
             backgroundEl.style.backgroundPosition = (e.clientX / 50).toString() + "px " + (e.clientY / 50).toString() + "px";
         }
-
+        function parallaxTouch(e) {
+            let backgroundEl = document.getElementById("background");
+            backgroundEl.style.backgroundPosition = (e.clientX / 50).toString() + "px " + (e.clientY / 50).toString() + "px";
+        }
 
 
         // Sliding info panels scripts
